@@ -1,0 +1,47 @@
+name: Build Dyfala Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'Dyfala-Flutter-native-v0.1.zip'
+      - '.github/workflows/android.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unpack Dyfala Flutter project
+        run: |
+          unzip -q -o Dyfala-Flutter-native-v0.1.zip -d extracted
+          ls -la extracted/flutter_app
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Prepare Flutter Android project
+        working-directory: extracted/flutter_app
+        run: flutter create . --platforms=android --org uk.co.dyfala --project-name dyfala
+
+      - name: Get packages
+        working-directory: extracted/flutter_app
+        run: flutter pub get
+
+      - name: Test game engine
+        working-directory: extracted/flutter_app
+        run: flutter test
+
+      - name: Build debug APK
+        working-directory: extracted/flutter_app
+        run: flutter build apk --debug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: dyfala-debug-apk
+          path: extracted/flutter_app/build/app/outputs/flutter-apk/app-debug.apk
