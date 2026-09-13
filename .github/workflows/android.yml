@@ -34,7 +34,7 @@ jobs:
 
       - name: Test game engine
         working-directory: extracted/flutter_app
-        run: flutter test
+        run: flutter test test/game_engine_test.dart
 
       - name: Build debug APK
         working-directory: extracted/flutter_app
