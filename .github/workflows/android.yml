@@ -5,7 +5,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'Dyfala-Flutter-native-v0.11.4.zip'
+      - 'Dyfala-Flutter-native-v0.12.zip'
       - '.github/workflows/android.yml'
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
 
       - name: Unpack Dyfala Flutter project
         run: |
-          unzip -q -o Dyfala-Flutter-native-v0.11.4.zip -d extracted
+          unzip -q -o Dyfala-Flutter-native-v0.12.zip -d extracted
           ls -la extracted/flutter_app
 
       - uses: subosito/flutter-action@v2
