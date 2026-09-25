@@ -449,15 +449,15 @@ class _StatsCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       constraints: const BoxConstraints(maxWidth: 620),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 18),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(.96),
-        borderRadius: BorderRadius.circular(32),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: const [
           BoxShadow(
             color: Color(0x14071A27),
-            blurRadius: 18,
-            offset: Offset(0, 8),
+            blurRadius: 12,
+            offset: Offset(0, 5),
           ),
         ],
       ),
@@ -522,18 +522,18 @@ class _StatItem extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, color: colour, size: 25),
-        const SizedBox(height: 8),
+        Icon(icon, color: colour, size: 19),
+        const SizedBox(height: 4),
         Text(
           value,
           style: GoogleFonts.fredoka(
-            fontSize: 28,
+            fontSize: 21,
             height: 1,
             fontWeight: FontWeight.w700,
             color: DyfalaPalette.navy,
           ),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 3),
         SizedBox(
           width: double.infinity,
           child: FittedBox(
@@ -543,7 +543,7 @@ class _StatItem extends StatelessWidget {
               textAlign: TextAlign.center,
               maxLines: 1,
               style: GoogleFonts.nunitoSans(
-                fontSize: 11,
+                fontSize: 9.5,
                 height: 1,
                 fontWeight: FontWeight.w800,
                 color: DyfalaPalette.inkSoft,
@@ -564,7 +564,7 @@ class _DividerLine extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 1,
-      height: 92,
+      height: 58,
       margin: const EdgeInsets.symmetric(horizontal: 2),
       color: DyfalaPalette.tileBorder.withOpacity(.8),
     );

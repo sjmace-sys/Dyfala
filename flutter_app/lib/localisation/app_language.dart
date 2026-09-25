@@ -45,7 +45,9 @@ class AppStrings {
   String get best => isWelsh ? 'GORAU' : 'BEST';
   String get stars => isWelsh ? 'SÊR' : 'STARS';
 
-  String tilesNeeded(int count) => isWelsh ? 'Mae angen $count teilsen' : 'You need $count tiles';
+  String tilesNeeded(int count) => isWelsh
+      ? 'Bron â bod — llenwa bob un o’r $count teilsen yn gyntaf.'
+      : 'Nearly there — fill all $count tiles first.';
   String get wellDone => isWelsh ? 'Da iawn! ⭐' : 'Nice one! ⭐';
   String get todaysAnswer => isWelsh ? 'Cynnig da — gair heddiw oedd…' : 'Good try — today’s word was…';
   String attempts(int count, int puzzle) => isWelsh
@@ -137,8 +139,8 @@ class AppStrings {
 
 
   String get invalidWord => isWelsh
-      ? 'Nid yw hynny yn air Cymraeg yn y geiriadur eto.'
-      : 'That is not a Welsh word in the lexicon.';
+      ? 'Hmm… dydyn ni ddim yn adnabod y gair Cymraeg hwnnw eto.'
+      : 'Hmm… that one isn’t in our Welsh word list yet.';
 
   String get clueLead => isWelsh ? 'Awgrym gwell' : 'Better clue';
 
@@ -185,10 +187,9 @@ class AppStrings {
   }
 
   String contextualHint({required String category, required String sentence, required int tileCount}) {
-    final label = categoryName(category);
     return isWelsh
-        ? 'Mae’r gair hwn yn ymwneud â $label. Mae ganddo $tileCount teilsen. Enghraifft: “$sentence”'
-        : 'This word is about $label. It has $tileCount tiles. Example: “$sentence”';
+        ? 'Cliw: “$sentence”'
+        : 'Clue: “$sentence”';
   }
 
   String get levelEveryday => isWelsh ? 'Cymraeg bob dydd' : 'Everyday Welsh';

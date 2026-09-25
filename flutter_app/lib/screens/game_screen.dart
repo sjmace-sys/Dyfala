@@ -19,7 +19,7 @@ class GameScreen extends StatelessWidget {
         : 'assets/approved/home-en.png';
   }
 
-  void _showInvalidWordMessage(BuildContext context, String message) {
+  void _showFriendlyMessage(BuildContext context, String message) {
     final overlay = Overlay.of(context);
     late final OverlayEntry entry;
     entry = OverlayEntry(
@@ -47,7 +47,7 @@ class GameScreen extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.sentiment_dissatisfied_rounded, color: DyfalaPalette.red, size: 29),
+                    const Icon(Icons.auto_awesome_rounded, color: DyfalaPalette.red, size: 27),
                     const SizedBox(width: 12),
                     Flexible(
                       child: Text(
@@ -70,7 +70,7 @@ class GameScreen extends StatelessWidget {
       ),
     );
     overlay.insert(entry);
-    Future<void>.delayed(const Duration(seconds: 1), () {
+    Future<void>.delayed(const Duration(milliseconds: 700), () {
       if (entry.mounted) entry.remove();
     });
   }
@@ -230,21 +230,11 @@ class GameScreen extends StatelessWidget {
                     onSubmit: () async {
                       final message = await controller.submitGuess();
                       if (!context.mounted) return;
-                      if (controller.lastSubmitWasInvalidWord && message != null) {
-                        await HapticFeedback.vibrate();
-                        if (context.mounted) _showInvalidWordMessage(context, message);
-                        return;
-                      }
-                      if (message != null && context.mounted) {
-                        ScaffoldMessenger.of(context)
-                          ..hideCurrentSnackBar()
-                          ..showSnackBar(
-                            SnackBar(
-                              content: Text(message),
-                              behavior: SnackBarBehavior.floating,
-                              backgroundColor: DyfalaPalette.navy,
-                            ),
-                          );
+                      if (message != null) {
+                        await HapticFeedback.lightImpact();
+                        if (context.mounted) {
+                          _showFriendlyMessage(context, message);
+                        }
                       }
                     },
                   ),

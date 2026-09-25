@@ -123,11 +123,28 @@ class GameController extends ChangeNotifier {
 
   String _maskedSentence() {
     var masked = puzzle.exampleEn;
-    final meaning = puzzle.meaning.trim();
-    if (meaning.isNotEmpty) {
-      final pattern = RegExp(RegExp.escape(meaning), caseSensitive: false);
-      masked = masked.replaceFirst(pattern, '_____');
+    final candidates = puzzle.meaning
+        .split('/')
+        .map((value) => value.trim())
+        .where((value) => value.isNotEmpty)
+        .expand((value) sync* {
+          yield value;
+          if (value.toLowerCase().startsWith('to ')) {
+            yield value.substring(3).trim();
+          }
+        })
+        .toList()
+      ..sort((a, b) => b.length.compareTo(a.length));
+
+    for (final candidate in candidates) {
+      final pattern = RegExp(RegExp.escape(candidate), caseSensitive: false);
+      final next = masked.replaceFirst(pattern, '_____');
+      if (next != masked) {
+        masked = next;
+        break;
+      }
     }
+
     if (masked == puzzle.exampleEn) {
       final answerPattern = RegExp(RegExp.escape(puzzle.answer), caseSensitive: false);
       masked = masked.replaceFirst(answerPattern, '_____');
