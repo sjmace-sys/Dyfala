@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../ads/ad_break_screen.dart';
 import '../ads/ad_service.dart';
 import '../game/game_controller.dart';
 import '../localisation/app_language.dart';
@@ -11,12 +12,6 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, required this.controller});
 
   final GameController controller;
-
-  String _homeBackground(UiLanguage language) {
-    return language == UiLanguage.welsh
-        ? 'assets/approved/home-cy.png'
-        : 'assets/approved/home-en.png';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +27,32 @@ class HomeScreen extends StatelessWidget {
             right: -3,
             top: -3,
             bottom: -3,
-            child: Image.asset(
-              _homeBackground(controller.uiLanguage),
-              fit: BoxFit.cover,
-              alignment: Alignment.topCenter,
-              filterQuality: FilterQuality.high,
-              gaplessPlayback: true,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.asset(
+                  'assets/approved/home-en.png',
+                  fit: BoxFit.cover,
+                  alignment: Alignment.topCenter,
+                  filterQuality: FilterQuality.high,
+                ),
+                IgnorePointer(
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 160),
+                    opacity: controller.uiLanguage == UiLanguage.welsh ? 1 : 0,
+                    child: ClipPath(
+                      clipper: const _WelshTextClipper(),
+                      child: Image.asset(
+                        'assets/approved/home-cy.png',
+                        fit: BoxFit.cover,
+                        alignment: Alignment.topCenter,
+                        filterQuality: FilterQuality.high,
+                        gaplessPlayback: true,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           SafeArea(
@@ -89,14 +104,28 @@ class HomeScreen extends StatelessWidget {
                         const SizedBox(height: 14),
                         _PrimaryActionButton(
                           label: controller.homeButtonLabel,
-                          onTap: () {
+                          onTap: () async {
                             if (controller.gameOver) {
                               controller.startOrResume();
                               return;
                             }
-                            AdService.instance.showBeforeGame(
-                              onComplete: controller.startOrResume,
+
+                            if (!AdService.instance.shouldShowAdBreak) {
+                              controller.startOrResume();
+                              return;
+                            }
+
+                            final play = await Navigator.of(context).push<bool>(
+                              MaterialPageRoute<bool>(
+                                builder: (_) => AdBreakScreen(
+                                  language: controller.uiLanguage,
+                                ),
+                              ),
                             );
+
+                            if (play == true && context.mounted) {
+                              controller.startOrResume();
+                            }
                           },
                         ),
                       ],
@@ -110,6 +139,40 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+class _WelshTextClipper extends CustomClipper<Path> {
+  const _WelshTextClipper();
+
+  static const double _sourceWidth = 941;
+  static const double _sourceHeight = 1672;
+
+  @override
+  Path getClip(Size size) {
+    final scale = (size.width / _sourceWidth) > (size.height / _sourceHeight)
+        ? size.width / _sourceWidth
+        : size.height / _sourceHeight;
+    final renderedWidth = _sourceWidth * scale;
+    final renderedHeight = _sourceHeight * scale;
+    final dx = (size.width - renderedWidth) / 2;
+    const dy = 0.0;
+
+    Rect mapRect(double left, double top, double right, double bottom) {
+      return Rect.fromLTRB(
+        dx + left * scale,
+        dy + top * scale,
+        dx + right * scale,
+        dy + bottom * scale,
+      );
+    }
+
+    return Path()
+      ..addRect(mapRect(95, 315, 835, 555))
+      ..addRect(mapRect(495, 565, 850, 735));
+  }
+
+  @override
+  bool shouldReclip(covariant _WelshTextClipper oldClipper) => false;
 }
 
 class _HelpPage extends StatelessWidget {
