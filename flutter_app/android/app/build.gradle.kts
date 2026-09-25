@@ -26,7 +26,22 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        create("dyfalaTest") {
+            storeFile = file("dyfala-test.keystore")
+            storePassword = "android"
+            keyAlias = "dyfala-test"
+            keyPassword = "android"
+        }
+    }
+
     buildTypes {
+        debug {
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-test"
+            signingConfig = signingConfigs.getByName("dyfalaTest")
+        }
+
         release {
             signingConfig = signingConfigs.getByName("debug")
         }
