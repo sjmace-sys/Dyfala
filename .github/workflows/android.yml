@@ -1,7 +1,7 @@
 name: Build Dyfala Android APK
 
 permissions:
-  contents: write
+  contents: read
 
 on:
   workflow_dispatch:
@@ -9,46 +9,26 @@ on:
     branches: [ main ]
     paths:
       - 'flutter_app/**'
-      - 'Dyfala-Flutter-native-v0.18.zip'
       - '.github/workflows/android.yml'
+
+concurrency:
+  group: dyfala-android-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: main
-
-      - name: Migrate v0.18 source into repository
-        shell: bash
-        run: |
-          if [ ! -f flutter_app/pubspec.yaml ]; then
-            echo "No live Flutter source found. Migrating v0.18..."
-            rm -rf .migration flutter_app
-            mkdir -p .migration
-            unzip -q -o Dyfala-Flutter-native-v0.18.zip -d .migration
-            test -d .migration/flutter_app
-            mv .migration/flutter_app ./flutter_app
-            rm -rf .migration
-
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add flutter_app
-            git commit -m "Migrate Dyfala v0.18 Flutter source into repository"
-            git push origin HEAD:main
-          else
-            echo "Live Flutter source already present; no migration needed."
-          fi
 
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
 
-      - name: Prepare Flutter Android project
+      - name: Restore persistent test signing key
         working-directory: flutter_app
-        run: flutter create . --platforms=android --org uk.co.dyfala --project-name dyfala
+        run: base64 --decode android/app/dyfala-test.keystore.b64 > android/app/dyfala-test.keystore
 
       - name: Get packages
         working-directory: flutter_app
@@ -58,12 +38,12 @@ jobs:
         working-directory: flutter_app
         run: flutter test test/game_engine_test.dart
 
-      - name: Build debug APK
+      - name: Build updateable test APK
         working-directory: flutter_app
-        run: flutter build apk --debug
+        run: flutter build apk --debug --build-number="${GITHUB_RUN_NUMBER}"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: dyfala-debug-apk
+          name: dyfala-test-apk
           path: flutter_app/build/app/outputs/flutter-apk/app-debug.apk
