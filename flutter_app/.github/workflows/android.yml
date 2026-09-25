@@ -1,0 +1,28 @@
+name: Android test build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Complete Flutter platform scaffolding
+        run: flutter create . --platforms=android --org uk.co.dyfala --project-name dyfala
+      - name: Get packages
+        run: flutter pub get
+      - name: Test game engine
+        run: flutter test
+      - name: Build debug APK
+        run: flutter build apk --debug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dyfala-debug-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
