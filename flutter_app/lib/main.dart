@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+import 'ads/ad_service.dart';
 import 'game/game_controller.dart';
 import 'screens/game_screen.dart';
 import 'screens/home_screen.dart';
@@ -7,8 +9,10 @@ import 'screens/result_screen.dart';
 import 'theme/dyfala_theme.dart';
 import 'widgets/welsh_landscape.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await MobileAds.instance.initialize();
+  AdService.instance.preload();
   runApp(const DyfalaBootstrap());
 }
 

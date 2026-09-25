@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../ads/ad_service.dart';
 import '../game/game_controller.dart';
 import '../localisation/app_language.dart';
 import '../theme/dyfala_theme.dart';
@@ -36,6 +37,7 @@ class HomeScreen extends StatelessWidget {
               fit: BoxFit.cover,
               alignment: Alignment.topCenter,
               filterQuality: FilterQuality.high,
+              gaplessPlayback: true,
             ),
           ),
           SafeArea(
@@ -87,7 +89,15 @@ class HomeScreen extends StatelessWidget {
                         const SizedBox(height: 14),
                         _PrimaryActionButton(
                           label: controller.homeButtonLabel,
-                          onTap: controller.startOrResume,
+                          onTap: () {
+                            if (controller.gameOver) {
+                              controller.startOrResume();
+                              return;
+                            }
+                            AdService.instance.showBeforeGame(
+                              onComplete: controller.startOrResume,
+                            );
+                          },
                         ),
                       ],
                     ),

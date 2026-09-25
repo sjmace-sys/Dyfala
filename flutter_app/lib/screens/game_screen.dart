@@ -70,7 +70,7 @@ class GameScreen extends StatelessWidget {
       ),
     );
     overlay.insert(entry);
-    Future<void>.delayed(const Duration(milliseconds: 700), () {
+    Future<void>.delayed(const Duration(milliseconds: 1400), () {
       if (entry.mounted) entry.remove();
     });
   }
