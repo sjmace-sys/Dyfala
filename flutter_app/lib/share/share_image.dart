@@ -23,6 +23,14 @@ class DyfalaShareImage {
 
     _drawDecor(canvas, width, height);
 
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        const Rect.fromLTWH(34, 34, 1012, 1282),
+        const Radius.circular(58),
+      ),
+      Paint()..color = const Color(0xFFFFFDF8).withOpacity(.94),
+    );
+
     final title = TextPainter(
       text: const TextSpan(
         children: [
@@ -30,7 +38,7 @@ class DyfalaShareImage {
             text: 'DYFALA',
             style: TextStyle(
               color: DyfalaPalette.navy,
-              fontSize: 96,
+              fontSize: 108,
               fontWeight: FontWeight.w900,
               letterSpacing: -3,
             ),
@@ -39,7 +47,7 @@ class DyfalaShareImage {
             text: '!',
             style: TextStyle(
               color: DyfalaPalette.red,
-              fontSize: 96,
+              fontSize: 108,
               fontWeight: FontWeight.w900,
             ),
           ),
@@ -48,12 +56,12 @@ class DyfalaShareImage {
       textDirection: TextDirection.ltr,
     )..layout();
 
-    title.paint(canvas, Offset((width - title.width) / 2, 72));
+    title.paint(canvas, Offset((width - title.width) / 2, 62));
 
     final underline = Paint()..color = DyfalaPalette.yellow;
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        const Rect.fromLTWH(410, 178, 260, 14),
+        const Rect.fromLTWH(380, 177, 320, 14),
         const Radius.circular(99),
       ),
       underline,
@@ -75,9 +83,9 @@ class DyfalaShareImage {
     _drawText(
       canvas,
       '${controller.resultStars} ${controller.resultStars == 1 ? 'STAR' : 'STARS'}',
-      y: 405,
+      y: 420,
       width: width,
-      size: 44,
+      size: 48,
       colour: DyfalaPalette.navy,
       weight: FontWeight.w900,
     );
@@ -88,9 +96,9 @@ class DyfalaShareImage {
     _drawText(
       canvas,
       result,
-      y: 468,
+      y: 486,
       width: width,
-      size: 31,
+      size: 34,
       colour: DyfalaPalette.greenDark,
       weight: FontWeight.w800,
     );
@@ -102,16 +110,16 @@ class DyfalaShareImage {
       controller.hintsUsed == 0
           ? 'No hints needed'
           : '${controller.hintsUsed} ${controller.hintsUsed == 1 ? 'hint' : 'hints'} used',
-      y: 1110,
+      y: 1095,
       width: width,
-      size: 28,
+      size: 30,
       colour: DyfalaPalette.inkSoft,
       weight: FontWeight.w700,
     );
 
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        const Rect.fromLTWH(165, 1180, 750, 92),
+        const Rect.fromLTWH(90, 1170, 900, 100),
         const Radius.circular(46),
       ),
       Paint()..color = DyfalaPalette.red,
@@ -120,9 +128,9 @@ class DyfalaShareImage {
     _drawText(
       canvas,
       'Learning Welsh, one word at a time',
-      y: 1207,
+      y: 1201,
       width: width,
-      size: 29,
+      size: 31,
       colour: Colors.white,
       weight: FontWeight.w800,
     );
@@ -160,13 +168,13 @@ class DyfalaShareImage {
   }
 
   static void _drawStars(Canvas canvas, int stars, double width) {
-    const y = 330.0;
-    const spacing = 175.0;
+    const y = 336.0;
+    const spacing = 210.0;
     final start = width / 2 - spacing;
 
     for (var index = 0; index < 3; index++) {
       final center = Offset(start + spacing * index, y);
-      final path = _starPath(center, 68, 31);
+      final path = _starPath(center, 82, 37);
       final earned = index < stars;
       if (earned) {
         canvas.drawPath(path, Paint()..color = DyfalaPalette.yellow);
@@ -202,14 +210,17 @@ class DyfalaShareImage {
 
   static void _drawGrid(Canvas canvas, GameController controller) {
     final tileCount = controller.answerTokens.length;
-    const tile = 102.0;
     const gap = 16.0;
-    const rowGap = 18.0;
+    const rowGap = 16.0;
+    final tile = math.min(
+      140.0,
+      (900.0 - math.max(0, tileCount - 1) * gap) / tileCount,
+    );
     final gridWidth = tileCount * tile + (tileCount - 1) * gap;
     final left = (1080 - gridWidth) / 2;
     final rows = controller.guesses;
     final gridHeight = rows.length * tile + math.max(0, rows.length - 1) * rowGap;
-    final top = 570 + math.max(0.0, (470 - gridHeight) / 2);
+    final top = 570 + math.max(0.0, (480 - gridHeight) / 2);
 
     for (var row = 0; row < rows.length; row++) {
       final guess = rows[row];
@@ -227,7 +238,7 @@ class DyfalaShareImage {
           tile,
         );
         canvas.drawRRect(
-          RRect.fromRectAndRadius(rect, const Radius.circular(19)),
+          RRect.fromRectAndRadius(rect, const Radius.circular(23)),
           Paint()..color = colour,
         );
       }
@@ -257,7 +268,7 @@ class DyfalaShareImage {
       maxLines: 2,
       textAlign: TextAlign.center,
       textDirection: TextDirection.ltr,
-    )..layout(maxWidth: width - 120);
+    )..layout(maxWidth: width - 88);
 
     painter.paint(canvas, Offset((width - painter.width) / 2, y));
   }

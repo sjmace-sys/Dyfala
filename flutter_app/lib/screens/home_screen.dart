@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -137,6 +139,61 @@ class _WelshHomeCopyOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        ClipPath(
+          clipper: const _WelshMainCopyClipper(),
+          child: Image.asset(
+            'assets/approved/home-cy.png',
+            fit: BoxFit.cover,
+            alignment: Alignment.topCenter,
+            filterQuality: FilterQuality.high,
+            gaplessPlayback: true,
+          ),
+        ),
+        const _WelshSidePhrase(),
+      ],
+    );
+  }
+}
+
+class _WelshMainCopyClipper extends CustomClipper<Path> {
+  const _WelshMainCopyClipper();
+
+  static const double _sourceWidth = 941;
+  static const double _sourceHeight = 1672;
+
+  @override
+  Path getClip(Size size) {
+    final scale = math.max(
+      size.width / _sourceWidth,
+      size.height / _sourceHeight,
+    );
+    final renderedWidth = _sourceWidth * scale;
+    final dx = (size.width - renderedWidth) / 2;
+
+    Rect mapRect(double left, double top, double right, double bottom) {
+      return Rect.fromLTRB(
+        dx + left * scale,
+        top * scale,
+        dx + right * scale,
+        bottom * scale,
+      );
+    }
+
+    return Path()..addRect(mapRect(125, 332, 825, 548));
+  }
+
+  @override
+  bool shouldReclip(covariant _WelshMainCopyClipper oldClipper) => false;
+}
+
+class _WelshSidePhrase extends StatelessWidget {
+  const _WelshSidePhrase();
+
+  @override
+  Widget build(BuildContext context) {
     return FittedBox(
       fit: BoxFit.cover,
       alignment: Alignment.topCenter,
@@ -146,63 +203,63 @@ class _WelshHomeCopyOverlay extends StatelessWidget {
         child: Stack(
           children: [
             Positioned(
-              left: 92,
-              top: 285,
-              width: 760,
-              height: 292,
+              left: 500,
+              top: 560,
+              width: 350,
+              height: 185,
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   gradient: RadialGradient(
-                    radius: .78,
+                    radius: .90,
                     colors: [
                       DyfalaPalette.cream,
                       DyfalaPalette.cream,
-                      DyfalaPalette.cream.withOpacity(.96),
+                      DyfalaPalette.cream.withOpacity(.98),
                       DyfalaPalette.cream.withOpacity(0),
                     ],
-                    stops: const [0, .60, .80, 1],
+                    stops: const [0, .56, .76, 1],
                   ),
                 ),
               ),
             ),
             Positioned(
-              left: 110,
-              right: 110,
-              top: 330,
-              child: Column(
-                children: [
-                  Text(
-                    'Gair Cymraeg newydd',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.fredoka(
-                      color: DyfalaPalette.navy,
-                      fontSize: 58,
-                      height: .98,
-                      fontWeight: FontWeight.w700,
+              left: 525,
+              top: 594,
+              width: 295,
+              child: Transform.rotate(
+                angle: -.055,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Dysga air.',
+                      style: GoogleFonts.fredoka(
+                        color: DyfalaPalette.navy,
+                        fontSize: 39,
+                        height: .96,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  Text(
-                    'bob dydd',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.fredoka(
-                      color: DyfalaPalette.red,
-                      fontSize: 68,
-                      height: .98,
-                      fontWeight: FontWeight.w700,
+                    Text(
+                      'Gwena fwy.',
+                      style: GoogleFonts.fredoka(
+                        color: DyfalaPalette.navy,
+                        fontSize: 39,
+                        height: .96,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Y ffordd hwyliog o ddysgu geiriau Cymraeg.',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.nunitoSans(
-                      color: DyfalaPalette.navy,
-                      fontSize: 29,
-                      height: 1.08,
-                      fontWeight: FontWeight.w900,
+                    const SizedBox(height: 8),
+                    Container(
+                      width: 238,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: DyfalaPalette.red,
+                        borderRadius: BorderRadius.circular(99),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
