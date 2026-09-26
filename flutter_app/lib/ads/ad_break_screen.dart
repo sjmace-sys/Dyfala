@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../localisation/app_language.dart';
 import '../theme/dyfala_theme.dart';
@@ -18,8 +17,6 @@ class AdBreakScreen extends StatefulWidget {
 class _AdBreakScreenState extends State<AdBreakScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _timer;
-  BannerAd? _banner;
-  bool _adLoaded = false;
   bool _ready = false;
 
   bool get _isWelsh => widget.language == UiLanguage.welsh;
@@ -31,37 +28,13 @@ class _AdBreakScreenState extends State<AdBreakScreen>
     _timer = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3),
-    )..addStatusListener((status) {
+    )
+      ..addStatusListener((status) {
         if (status == AnimationStatus.completed && mounted) {
           setState(() => _ready = true);
         }
-      });
-
-    final adUnitId = AdService.instance.bannerAdUnitId;
-    if (adUnitId != null) {
-      _banner = BannerAd(
-        adUnitId: adUnitId,
-        size: AdSize.mediumRectangle,
-        request: const AdRequest(),
-        listener: BannerAdListener(
-          onAdLoaded: (_) {
-            if (!mounted) return;
-            setState(() => _adLoaded = true);
-            _timer.forward(from: 0);
-          },
-          onAdFailedToLoad: (ad, _) {
-            ad.dispose();
-            if (mounted) {
-              setState(() {
-                _banner = null;
-                _adLoaded = false;
-                _ready = true;
-              });
-            }
-          },
-        ),
-      )..load();
-    }
+      })
+      ..forward();
 
     AdService.instance.markAdBreakShown();
   }
@@ -69,7 +42,6 @@ class _AdBreakScreenState extends State<AdBreakScreen>
   @override
   void dispose() {
     _timer.dispose();
-    _banner?.dispose();
     super.dispose();
   }
 
@@ -118,10 +90,9 @@ class _AdBreakScreenState extends State<AdBreakScreen>
                   Container(
                     width: 332,
                     height: 282,
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.all(16),
+                    clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(.96),
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(26),
                       boxShadow: const [
                         BoxShadow(
@@ -131,33 +102,11 @@ class _AdBreakScreenState extends State<AdBreakScreen>
                         ),
                       ],
                     ),
-                    child: _adLoaded && _banner != null
-                        ? SizedBox(
-                            width: _banner!.size.width.toDouble(),
-                            height: _banner!.size.height.toDouble(),
-                            child: AdWidget(ad: _banner!),
-                          )
-                        : Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(
-                                Icons.campaign_rounded,
-                                color: DyfalaPalette.red,
-                                size: 40,
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                _isWelsh
-                                    ? 'Yn llwytho’r hysbyseb…'
-                                    : 'Loading advert…',
-                                style: GoogleFonts.nunitoSans(
-                                  color: DyfalaPalette.navy,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                            ],
-                          ),
+                    child: Image.asset(
+                      'assets/mock_ads/mock_ad_wales.png',
+                      fit: BoxFit.cover,
+                      filterQuality: FilterQuality.high,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   AnimatedBuilder(
@@ -167,7 +116,7 @@ class _AdBreakScreenState extends State<AdBreakScreen>
                         borderRadius: BorderRadius.circular(999),
                         child: LinearProgressIndicator(
                           minHeight: 8,
-                          value: _adLoaded ? _timer.value : 0,
+                          value: _timer.value,
                           backgroundColor: Colors.white.withOpacity(.85),
                           color: DyfalaPalette.yellow,
                         ),
