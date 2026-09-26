@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:cross_file/cross_file.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../game/game_controller.dart';
 import '../game/game_engine.dart';
+import '../share/share_image.dart';
 import '../theme/dyfala_theme.dart';
 
 class ResultScreen extends StatefulWidget {
@@ -44,13 +46,14 @@ class _ResultScreenState extends State<ResultScreen> {
   Future<void> _share(BuildContext context) async {
     final controller = widget.controller;
     try {
-      await Share.share(controller.shareText(), subject: 'Dyfala!');
+      final image = await DyfalaShareImage.create(controller);
+      await Share.shareXFiles([XFile(image.path)]);
     } catch (_) {
       await Clipboard.setData(ClipboardData(text: controller.shareText()));
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(controller.strings.copied),
+          content: Text(controller.strings.shareImageError),
           behavior: SnackBarBehavior.floating,
           backgroundColor: DyfalaPalette.navy,
         ),

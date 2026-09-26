@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'game/game_controller.dart';
@@ -103,16 +104,37 @@ class _LoadingScreen extends StatelessWidget {
                     ),
                     child: Image.asset('assets/icons/icon-512.png', fit: BoxFit.cover),
                   ),
-                  const SizedBox(height: 25),
-                  SizedBox(
-                    height: 82,
-                    child: Image.asset(
-                      'assets/approved/home-logo.png',
-                      fit: BoxFit.contain,
-                      filterQuality: FilterQuality.high,
+                  const SizedBox(height: 24),
+                  RichText(
+                    text: TextSpan(
+                      style: GoogleFonts.fredoka(
+                        fontSize: 54,
+                        height: 1,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: -1.4,
+                      ),
+                      children: const [
+                        TextSpan(
+                          text: 'DYFALA',
+                          style: TextStyle(color: DyfalaPalette.navy),
+                        ),
+                        TextSpan(
+                          text: '!',
+                          style: TextStyle(color: DyfalaPalette.red),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 5),
+                  Container(
+                    width: 126,
+                    height: 7,
+                    decoration: BoxDecoration(
+                      color: DyfalaPalette.yellow,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   const Text(
                     'The fun way to learn Welsh words.',
                     textAlign: TextAlign.center,

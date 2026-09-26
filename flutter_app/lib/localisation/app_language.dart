@@ -62,6 +62,9 @@ class AppStrings {
   String nextWord(String clock) => isWelsh ? 'Gair newydd mewn  $clock' : 'A fresh word in  $clock';
   String get share => isWelsh ? 'Rhannu’r hwyl' : 'Share the fun';
   String get copied => isWelsh ? 'Canlyniad wedi’i gopïo' : 'Result copied';
+  String get shareImageError => isWelsh
+      ? 'Doedd dim modd rhannu’r ddelwedd — copïwyd y canlyniad.'
+      : 'Couldn’t share the image — the result was copied instead.';
   String get shareFooter => isWelsh ? 'Cymru yn ein geiriau' : 'Learning Welsh, one word at a time';
   String get tryAnother => isWelsh ? 'Chwarae gair arall' : 'Play another word';
   String get practiceShare => isWelsh ? 'YMARFER' : 'PRACTICE';

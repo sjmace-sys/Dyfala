@@ -381,92 +381,106 @@ class _HintCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+      padding: const EdgeInsets.fromLTRB(22, 20, 22, 20),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFFCF6),
-        borderRadius: BorderRadius.circular(28),
+        color: const Color(0xFFFFFDF8),
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(
+          color: DyfalaPalette.yellow.withOpacity(.32),
+          width: 1.2,
+        ),
         boxShadow: const [
-          BoxShadow(color: Color(0x26071A27), blurRadius: 28, offset: Offset(0, 14)),
+          BoxShadow(
+            color: Color(0x26071A27),
+            blurRadius: 28,
+            offset: Offset(0, 14),
+          ),
         ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  hint.title,
-                  style: GoogleFonts.fredoka(
-                    color: DyfalaPalette.navy,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              Material(
-                color: DyfalaPalette.red.withOpacity(.12),
-                borderRadius: BorderRadius.circular(999),
-                child: InkWell(
-                  onTap: onClose,
-                  borderRadius: BorderRadius.circular(999),
-                  child: const SizedBox(
-                    width: 40,
-                    height: 40,
-                    child: Icon(Icons.close_rounded, color: DyfalaPalette.red),
-                  ),
-                ),
-              ),
-            ],
+          Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              color: DyfalaPalette.yellow.withOpacity(.22),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.lightbulb_rounded,
+              color: DyfalaPalette.navy,
+              size: 27,
+            ),
           ),
           const SizedBox(height: 10),
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              hint.body,
-              style: GoogleFonts.nunitoSans(
-                color: DyfalaPalette.navy,
-                fontSize: 17,
-                height: 1.35,
-                fontWeight: FontWeight.w800,
-              ),
+          Text(
+            hint.title,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.fredoka(
+              color: DyfalaPalette.navy,
+              fontSize: 23,
+              height: 1,
+              fontWeight: FontWeight.w700,
             ),
           ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              const Icon(Icons.star_rounded, color: DyfalaPalette.yellow, size: 22),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
+          const SizedBox(height: 14),
+          Text(
+            hint.body,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.nunitoSans(
+              color: DyfalaPalette.navy,
+              fontSize: 17,
+              height: 1.34,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
+            decoration: BoxDecoration(
+              color: DyfalaPalette.creamDeep.withOpacity(.72),
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.star_rounded,
+                  color: DyfalaPalette.yellow,
+                  size: 20,
+                ),
+                const SizedBox(width: 6),
+                Text(
                   starsLabel,
                   style: GoogleFonts.nunitoSans(
                     color: DyfalaPalette.greenDark,
-                    fontSize: 13,
+                    fontSize: 12.5,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 18),
           SizedBox(
-            height: 52,
+            width: double.infinity,
+            height: 48,
             child: FilledButton(
               onPressed: onClose,
               style: FilledButton.styleFrom(
                 backgroundColor: DyfalaPalette.green,
                 foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(999),
+                ),
               ),
               child: Text(
                 closeLabel,
-                style: GoogleFonts.fredoka(fontSize: 18, fontWeight: FontWeight.w600),
+                style: GoogleFonts.fredoka(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ),

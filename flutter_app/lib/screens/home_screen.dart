@@ -38,18 +38,9 @@ class HomeScreen extends StatelessWidget {
                 ),
                 IgnorePointer(
                   child: AnimatedOpacity(
-                    duration: const Duration(milliseconds: 160),
+                    duration: const Duration(milliseconds: 140),
                     opacity: controller.uiLanguage == UiLanguage.welsh ? 1 : 0,
-                    child: ClipPath(
-                      clipper: const _WelshTextClipper(),
-                      child: Image.asset(
-                        'assets/approved/home-cy.png',
-                        fit: BoxFit.cover,
-                        alignment: Alignment.topCenter,
-                        filterQuality: FilterQuality.high,
-                        gaplessPlayback: true,
-                      ),
-                    ),
+                    child: const _WelshHomeCopyOverlay(),
                   ),
                 ),
               ],
@@ -141,38 +132,84 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _WelshTextClipper extends CustomClipper<Path> {
-  const _WelshTextClipper();
-
-  static const double _sourceWidth = 941;
-  static const double _sourceHeight = 1672;
+class _WelshHomeCopyOverlay extends StatelessWidget {
+  const _WelshHomeCopyOverlay();
 
   @override
-  Path getClip(Size size) {
-    final scale = (size.width / _sourceWidth) > (size.height / _sourceHeight)
-        ? size.width / _sourceWidth
-        : size.height / _sourceHeight;
-    final renderedWidth = _sourceWidth * scale;
-    final renderedHeight = _sourceHeight * scale;
-    final dx = (size.width - renderedWidth) / 2;
-    const dy = 0.0;
-
-    Rect mapRect(double left, double top, double right, double bottom) {
-      return Rect.fromLTRB(
-        dx + left * scale,
-        dy + top * scale,
-        dx + right * scale,
-        dy + bottom * scale,
-      );
-    }
-
-    return Path()
-      ..addRect(mapRect(95, 315, 835, 555))
-      ..addRect(mapRect(495, 565, 850, 735));
+  Widget build(BuildContext context) {
+    return FittedBox(
+      fit: BoxFit.cover,
+      alignment: Alignment.topCenter,
+      child: SizedBox(
+        width: 941,
+        height: 1672,
+        child: Stack(
+          children: [
+            Positioned(
+              left: 92,
+              top: 285,
+              width: 760,
+              height: 292,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    radius: .78,
+                    colors: [
+                      DyfalaPalette.cream,
+                      DyfalaPalette.cream,
+                      DyfalaPalette.cream.withOpacity(.96),
+                      DyfalaPalette.cream.withOpacity(0),
+                    ],
+                    stops: const [0, .60, .80, 1],
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 110,
+              right: 110,
+              top: 330,
+              child: Column(
+                children: [
+                  Text(
+                    'Gair Cymraeg newydd',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.fredoka(
+                      color: DyfalaPalette.navy,
+                      fontSize: 58,
+                      height: .98,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Text(
+                    'bob dydd',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.fredoka(
+                      color: DyfalaPalette.red,
+                      fontSize: 68,
+                      height: .98,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Y ffordd hwyliog o ddysgu geiriau Cymraeg.',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.nunitoSans(
+                      color: DyfalaPalette.navy,
+                      fontSize: 29,
+                      height: 1.08,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
-
-  @override
-  bool shouldReclip(covariant _WelshTextClipper oldClipper) => false;
 }
 
 class _HelpPage extends StatelessWidget {

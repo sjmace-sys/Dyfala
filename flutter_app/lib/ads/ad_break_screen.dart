@@ -31,13 +31,11 @@ class _AdBreakScreenState extends State<AdBreakScreen>
     _timer = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3),
-    )
-      ..addStatusListener((status) {
+    )..addStatusListener((status) {
         if (status == AnimationStatus.completed && mounted) {
           setState(() => _ready = true);
         }
-      })
-      ..forward();
+      });
 
     final adUnitId = AdService.instance.bannerAdUnitId;
     if (adUnitId != null) {
@@ -47,7 +45,9 @@ class _AdBreakScreenState extends State<AdBreakScreen>
         request: const AdRequest(),
         listener: BannerAdListener(
           onAdLoaded: (_) {
-            if (mounted) setState(() => _adLoaded = true);
+            if (!mounted) return;
+            setState(() => _adLoaded = true);
+            _timer.forward(from: 0);
           },
           onAdFailedToLoad: (ad, _) {
             ad.dispose();
@@ -55,6 +55,7 @@ class _AdBreakScreenState extends State<AdBreakScreen>
               setState(() {
                 _banner = null;
                 _adLoaded = false;
+                _ready = true;
               });
             }
           },
@@ -166,7 +167,7 @@ class _AdBreakScreenState extends State<AdBreakScreen>
                         borderRadius: BorderRadius.circular(999),
                         child: LinearProgressIndicator(
                           minHeight: 8,
-                          value: _timer.value,
+                          value: _adLoaded ? _timer.value : 0,
                           backgroundColor: Colors.white.withOpacity(.85),
                           color: DyfalaPalette.yellow,
                         ),
