@@ -103,7 +103,7 @@ class _AdBreakScreenState extends State<AdBreakScreen>
                       ],
                     ),
                     child: Image.asset(
-                      'assets/mock_ads/mock_ad_wales.png',
+                      'assets/approved/home-scene.png',
                       fit: BoxFit.cover,
                       filterQuality: FilterQuality.high,
                     ),
