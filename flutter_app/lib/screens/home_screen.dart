@@ -45,6 +45,7 @@ class HomeScreen extends StatelessWidget {
                     child: const _WelshHomeCopyOverlay(),
                   ),
                 ),
+                _SignpostShareOverlay(language: controller.uiLanguage),
               ],
             ),
           ),
@@ -182,7 +183,7 @@ class _WelshMainCopyClipper extends CustomClipper<Path> {
       );
     }
 
-    return Path()..addRect(mapRect(125, 332, 825, 548));
+    return Path()..addRect(mapRect(125, 292, 825, 552));
   }
 
   @override
@@ -269,6 +270,65 @@ class _WelshSidePhrase extends StatelessWidget {
   }
 }
 
+class _SignpostShareOverlay extends StatelessWidget {
+  const _SignpostShareOverlay({required this.language});
+
+  final UiLanguage language;
+
+  @override
+  Widget build(BuildContext context) {
+    final label = language == UiLanguage.welsh ? 'RHANNU' : 'SHARE';
+
+    return IgnorePointer(
+      child: FittedBox(
+        fit: BoxFit.cover,
+        alignment: Alignment.topCenter,
+        child: SizedBox(
+          width: 941,
+          height: 1672,
+          child: Stack(
+            children: [
+              Positioned(
+                left: 92,
+                top: 938,
+                width: 294,
+                height: 62,
+                child: Transform.rotate(
+                  angle: -.035,
+                  child: Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color(0xFFFFC94C),
+                          Color(0xFFFFB933),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      label,
+                      style: GoogleFonts.fredoka(
+                        color: DyfalaPalette.navy,
+                        fontSize: 39,
+                        height: 1,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: .4,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _HelpPage extends StatelessWidget {
   const _HelpPage({required this.controller});
 
@@ -297,12 +357,15 @@ class _HelpPage extends StatelessWidget {
                       Expanded(
                         child: Center(
                           child: SizedBox(
-                            width: 126,
-                            height: 40,
-                            child: Image.asset(
-                              'assets/brand/dyfala-logo.png',
-                              fit: BoxFit.contain,
-                              filterQuality: FilterQuality.high,
+                            width: 136,
+                            height: 48,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              child: Image.asset(
+                                'assets/brand/dyfala-logo.png',
+                                fit: BoxFit.contain,
+                                filterQuality: FilterQuality.high,
+                              ),
                             ),
                           ),
                         ),

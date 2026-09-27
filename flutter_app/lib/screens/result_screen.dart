@@ -123,10 +123,14 @@ class _ResultScreenState extends State<ResultScreen> {
                           Expanded(
                             child: Center(
                               child: SizedBox(
-                                height: 42,
-                                child: Image.asset(
-                                  'assets/brand/dyfala-logo.png',
-                                  fit: BoxFit.contain,
+                                height: 50,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 4),
+                                  child: Image.asset(
+                                    'assets/brand/dyfala-logo.png',
+                                    fit: BoxFit.contain,
+                                    filterQuality: FilterQuality.high,
+                                  ),
                                 ),
                               ),
                             ),

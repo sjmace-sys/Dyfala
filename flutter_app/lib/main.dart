@@ -103,11 +103,14 @@ class _LoadingScreen extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Image.asset(
-                      'assets/brand/dyfala-logo.png',
-                      width: 280,
-                      fit: BoxFit.contain,
-                      filterQuality: FilterQuality.high,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Image.asset(
+                        'assets/brand/dyfala-logo.png',
+                        width: 270,
+                        fit: BoxFit.contain,
+                        filterQuality: FilterQuality.high,
+                      ),
                     ),
                     const SizedBox(height: 22),
                     const SizedBox(

@@ -14,6 +14,7 @@ dependencies:
   share_plus: ^10.1.4
   cross_file: ^0.3.4+2
   google_mobile_ads: ^9.1.0
+  flutter_svg: ^2.0.10+1
 
 dev_dependencies:
   flutter_test:
@@ -34,3 +35,4 @@ flutter:
     - assets/approved/home-cy.png
     - assets/approved/help-en.png
     - assets/approved/help-cy.png
+    - assets/mock_ads/wales-tourism.svg
