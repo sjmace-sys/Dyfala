@@ -71,7 +71,7 @@ class _AdBreakScreenState extends State<AdBreakScreen>
                   SizedBox(
                     height: 56,
                     child: Image.asset(
-                      'assets/approved/home-logo.png',
+                      'assets/brand/dyfala-logo.png',
                       fit: BoxFit.contain,
                       filterQuality: FilterQuality.high,
                     ),
@@ -102,10 +102,100 @@ class _AdBreakScreenState extends State<AdBreakScreen>
                         ),
                       ],
                     ),
-                    child: Image.asset(
-                      'assets/approved/home-scene.png',
-                      fit: BoxFit.cover,
-                      filterQuality: FilterQuality.high,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Image.asset(
+                          'assets/approved/home-scene.png',
+                          fit: BoxFit.cover,
+                          alignment: Alignment.center,
+                          filterQuality: FilterQuality.high,
+                        ),
+                        const DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Color(0x22071A27),
+                                Color(0x33071A27),
+                                Color(0xB8071A27),
+                              ],
+                              stops: [0, .52, 1],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 5,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(.92),
+                                  borderRadius: BorderRadius.circular(999),
+                                ),
+                                child: Text(
+                                  _isWelsh ? 'DARGANFOD CYMRU' : 'EXPLORE WALES',
+                                  style: GoogleFonts.nunitoSans(
+                                    color: DyfalaPalette.red,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                              ),
+                              const Spacer(),
+                              Text(
+                                _isWelsh
+                                    ? 'Arfordir. Mynyddoedd. Cestyll.'
+                                    : 'Coast. Mountains. Castles.',
+                                style: GoogleFonts.fredoka(
+                                  color: Colors.white,
+                                  fontSize: 25,
+                                  height: 1.02,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                _isWelsh
+                                    ? 'Darganfydda dy antur nesaf yng Nghymru.'
+                                    : 'Find your next adventure in Wales.',
+                                style: GoogleFonts.nunitoSans(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  height: 1.15,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 9,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: DyfalaPalette.red,
+                                  borderRadius: BorderRadius.circular(999),
+                                ),
+                                child: Text(
+                                  _isWelsh ? 'Crwydro Cymru' : 'Discover Wales',
+                                  style: GoogleFonts.nunitoSans(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 16),

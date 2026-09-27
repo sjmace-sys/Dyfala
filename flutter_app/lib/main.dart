@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'game/game_controller.dart';
@@ -24,11 +23,29 @@ class DyfalaBootstrap extends StatefulWidget {
 
 class _DyfalaBootstrapState extends State<DyfalaBootstrap> {
   late final GameController controller;
+  bool _assetsReady = false;
+  bool _precacheStarted = false;
 
   @override
   void initState() {
     super.initState();
     controller = GameController()..initialise();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_precacheStarted) return;
+    _precacheStarted = true;
+
+    Future.wait([
+      precacheImage(const AssetImage('assets/approved/home-en.png'), context),
+      precacheImage(const AssetImage('assets/approved/home-cy.png'), context),
+      precacheImage(const AssetImage('assets/brand/dyfala-logo.png'), context),
+      precacheImage(const AssetImage('assets/approved/home-scene.png'), context),
+    ]).whenComplete(() {
+      if (mounted) setState(() => _assetsReady = true);
+    });
   }
 
   @override
@@ -46,7 +63,7 @@ class _DyfalaBootstrapState extends State<DyfalaBootstrap> {
       home: AnimatedBuilder(
         animation: controller,
         builder: (context, _) {
-          if (!controller.isReady) {
+          if (!controller.isReady || !_assetsReady) {
             return const _LoadingScreen();
           }
           switch (controller.screen) {
@@ -69,95 +86,44 @@ class _LoadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          const Positioned.fill(child: ColoredBox(color: DyfalaPalette.cream)),
-          Positioned(
-            right: -45,
-            top: -55,
-            child: Container(
-              width: 165,
-              height: 165,
-              decoration: const BoxDecoration(color: DyfalaPalette.red, shape: BoxShape.circle),
-            ),
-          ),
-          const Align(
-            alignment: Alignment.bottomCenter,
-            child: Opacity(opacity: .9, child: WelshLandscape(height: 185, showCastle: false)),
-          ),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 108,
-                    height: 108,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(
-                      color: DyfalaPalette.red,
-                      borderRadius: BorderRadius.circular(30),
-                      boxShadow: const [
-                        BoxShadow(color: Color(0x26071A27), blurRadius: 24, offset: Offset(0, 12)),
-                      ],
-                    ),
-                    child: Image.asset('assets/icons/icon-512.png', fit: BoxFit.cover),
-                  ),
-                  const SizedBox(height: 24),
-                  RichText(
-                    text: TextSpan(
-                      style: GoogleFonts.fredoka(
-                        fontSize: 54,
-                        height: 1,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -1.4,
-                      ),
-                      children: const [
-                        TextSpan(
-                          text: 'DYFALA',
-                          style: TextStyle(color: DyfalaPalette.navy),
-                        ),
-                        TextSpan(
-                          text: '!',
-                          style: TextStyle(color: DyfalaPalette.red),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Container(
-                    width: 126,
-                    height: 7,
-                    decoration: BoxDecoration(
-                      color: DyfalaPalette.yellow,
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'The fun way to learn Welsh words.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: DyfalaPalette.navy,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  const SizedBox(
-                    width: 26,
-                    height: 26,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 3,
-                      color: DyfalaPalette.green,
-                    ),
-                  ),
-                ],
+      backgroundColor: DyfalaPalette.cream,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            const Align(
+              alignment: Alignment.bottomCenter,
+              child: Opacity(
+                opacity: .82,
+                child: WelshLandscape(height: 180, showCastle: false),
               ),
             ),
-          ),
-        ],
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 36),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/brand/dyfala-logo.png',
+                      width: 280,
+                      fit: BoxFit.contain,
+                      filterQuality: FilterQuality.high,
+                    ),
+                    const SizedBox(height: 22),
+                    const SizedBox(
+                      width: 28,
+                      height: 28,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 3,
+                        color: DyfalaPalette.green,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

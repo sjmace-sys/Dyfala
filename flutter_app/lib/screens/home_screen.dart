@@ -300,7 +300,7 @@ class _HelpPage extends StatelessWidget {
                             width: 126,
                             height: 40,
                             child: Image.asset(
-                              'assets/approved/home-logo.png',
+                              'assets/brand/dyfala-logo.png',
                               fit: BoxFit.contain,
                               filterQuality: FilterQuality.high,
                             ),

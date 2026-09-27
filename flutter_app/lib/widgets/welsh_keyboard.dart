@@ -66,11 +66,11 @@ class WelshKeyboard extends StatelessWidget {
             SizedBox(
               width: 60,
               child: _Key(
-                label: 'Delete',
+                label: 'Enter',
                 action: true,
-                background: DyfalaPalette.green,
+                background: DyfalaPalette.red,
                 foreground: Colors.white,
-                onTap: onDelete,
+                onTap: onSubmit,
               ),
             ),
             const SizedBox(width: 5),
@@ -81,11 +81,11 @@ class WelshKeyboard extends StatelessWidget {
             SizedBox(
               width: 60,
               child: _Key(
-                label: 'Enter',
+                label: 'Delete',
                 action: true,
-                background: DyfalaPalette.red,
+                background: DyfalaPalette.green,
                 foreground: Colors.white,
-                onTap: onSubmit,
+                onTap: onDelete,
               ),
             ),
           ],

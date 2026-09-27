@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../game/game_controller.dart';
 import '../game/game_engine.dart';
@@ -14,6 +15,8 @@ class DyfalaShareImage {
   static Future<File> create(GameController controller) async {
     const width = 1080.0;
     const height = 1350.0;
+
+    final approvedLogo = await _loadAssetImage('assets/brand/dyfala-logo.png');
 
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
@@ -31,46 +34,26 @@ class DyfalaShareImage {
       Paint()..color = const Color(0xFFFFFDF8).withOpacity(.94),
     );
 
-    final title = TextPainter(
-      text: const TextSpan(
-        children: [
-          TextSpan(
-            text: 'DYFALA',
-            style: TextStyle(
-              color: DyfalaPalette.navy,
-              fontSize: 108,
-              fontWeight: FontWeight.w900,
-              letterSpacing: -3,
-            ),
-          ),
-          TextSpan(
-            text: '!',
-            style: TextStyle(
-              color: DyfalaPalette.red,
-              fontSize: 108,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-        ],
+    final logoRect = _containRect(
+      Size(approvedLogo.width.toDouble(), approvedLogo.height.toDouble()),
+      const Rect.fromLTWH(185, 58, 710, 178),
+    );
+    canvas.drawImageRect(
+      approvedLogo,
+      Rect.fromLTWH(
+        0,
+        0,
+        approvedLogo.width.toDouble(),
+        approvedLogo.height.toDouble(),
       ),
-      textDirection: TextDirection.ltr,
-    )..layout();
-
-    title.paint(canvas, Offset((width - title.width) / 2, 62));
-
-    final underline = Paint()..color = DyfalaPalette.yellow;
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        const Rect.fromLTWH(380, 177, 320, 14),
-        const Radius.circular(99),
-      ),
-      underline,
+      logoRect,
+      Paint()..filterQuality = FilterQuality.high,
     );
 
     _drawText(
       canvas,
       controller.practiceMode ? 'PRACTICE WORD' : 'DAILY WELSH WORD #${controller.puzzleNumber}',
-      y: 220,
+      y: 248,
       width: width,
       size: 27,
       colour: DyfalaPalette.inkSoft,
@@ -243,6 +226,28 @@ class DyfalaShareImage {
         );
       }
     }
+  }
+
+  static Future<ui.Image> _loadAssetImage(String path) async {
+    final data = await rootBundle.load(path);
+    final codec = await ui.instantiateImageCodec(data.buffer.asUint8List());
+    final frame = await codec.getNextFrame();
+    return frame.image;
+  }
+
+  static Rect _containRect(Size source, Rect destination) {
+    final scale = math.min(
+      destination.width / source.width,
+      destination.height / source.height,
+    );
+    final width = source.width * scale;
+    final height = source.height * scale;
+    return Rect.fromLTWH(
+      destination.left + (destination.width - width) / 2,
+      destination.top + (destination.height - height) / 2,
+      width,
+      height,
+    );
   }
 
   static void _drawText(

@@ -125,7 +125,7 @@ class _ResultScreenState extends State<ResultScreen> {
                               child: SizedBox(
                                 height: 42,
                                 child: Image.asset(
-                                  'assets/approved/home-logo.png',
+                                  'assets/brand/dyfala-logo.png',
                                   fit: BoxFit.contain,
                                 ),
                               ),
