@@ -142,8 +142,11 @@ replacements = [
     );
 
 """, ""),
-    ("y: 202,", "y: 184,"),
-    ("size: 27,", "size: 28,"),
+    ("""y: 202,
+      width: width,
+      size: 27,""", """y: 184,
+      width: width,
+      size: 28,"""),
     ("const y = 290.0;", "const y = 276.0;"),
     ("y: 368,", "y: 360,"),
     ("size: 48,", "size: 46,"),
