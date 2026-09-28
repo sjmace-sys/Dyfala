@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../game/game_controller.dart';
 import '../game/game_engine.dart';
@@ -14,7 +15,7 @@ class DyfalaShareImage {
 
   static Future<File> create(GameController controller) async {
     const width = 1080.0;
-    const height = 1350.0;
+    const height = 1200.0;
 
     final approvedLogo = await _loadAssetImage('assets/brand/dyfala-logo.png');
 
@@ -28,15 +29,15 @@ class DyfalaShareImage {
 
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        const Rect.fromLTWH(34, 34, 1012, 1282),
-        const Radius.circular(58),
+        const Rect.fromLTWH(24, 24, 1032, 1152),
+        const Radius.circular(48),
       ),
       Paint()..color = const Color(0xFFFFFDF8).withOpacity(.94),
     );
 
     final logoRect = _containRect(
       Size(approvedLogo.width.toDouble(), approvedLogo.height.toDouble()),
-      const Rect.fromLTWH(220, 64, 640, 150),
+      const Rect.fromLTWH(190, 48, 700, 145),
     );
     canvas.drawImageRect(
       approvedLogo,
@@ -50,10 +51,18 @@ class DyfalaShareImage {
       Paint()..filterQuality = FilterQuality.high,
     );
 
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        const Rect.fromLTWH(382, 171, 316, 15),
+        const Radius.circular(99),
+      ),
+      Paint()..color = DyfalaPalette.yellow,
+    );
+
     _drawText(
       canvas,
       controller.practiceMode ? 'PRACTICE WORD' : 'DAILY WELSH WORD #${controller.puzzleNumber}',
-      y: 230,
+      y: 202,
       width: width,
       size: 27,
       colour: DyfalaPalette.inkSoft,
@@ -66,7 +75,7 @@ class DyfalaShareImage {
     _drawText(
       canvas,
       '${controller.resultStars} ${controller.resultStars == 1 ? 'STAR' : 'STARS'}',
-      y: 408,
+      y: 368,
       width: width,
       size: 48,
       colour: DyfalaPalette.navy,
@@ -79,7 +88,7 @@ class DyfalaShareImage {
     _drawText(
       canvas,
       result,
-      y: 468,
+      y: 423,
       width: width,
       size: 34,
       colour: DyfalaPalette.greenDark,
@@ -93,7 +102,7 @@ class DyfalaShareImage {
       controller.hintsUsed == 0
           ? 'No hints needed'
           : '${controller.hintsUsed} ${controller.hintsUsed == 1 ? 'hint' : 'hints'} used',
-      y: 955,
+      y: 855,
       width: width,
       size: 29,
       colour: DyfalaPalette.inkSoft,
@@ -102,8 +111,8 @@ class DyfalaShareImage {
 
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        const Rect.fromLTWH(130, 1015, 820, 105),
-        const Radius.circular(44),
+        const Rect.fromLTWH(105, 910, 870, 92),
+        const Radius.circular(40),
       ),
       Paint()..color = const Color(0xFFFFF7E5),
     );
@@ -111,7 +120,7 @@ class DyfalaShareImage {
     _drawTextInRect(
       canvas,
       'PLAYED ON',
-      const Rect.fromLTWH(170, 1047, 250, 42),
+      const Rect.fromLTWH(155, 934, 260, 38),
       size: 27,
       colour: DyfalaPalette.inkSoft,
       weight: FontWeight.w900,
@@ -120,7 +129,7 @@ class DyfalaShareImage {
 
     final playedLogoRect = _containRect(
       Size(approvedLogo.width.toDouble(), approvedLogo.height.toDouble()),
-      const Rect.fromLTWH(455, 1031, 430, 72),
+      const Rect.fromLTWH(438, 924, 460, 62),
     );
     canvas.drawImageRect(
       approvedLogo,
@@ -136,7 +145,15 @@ class DyfalaShareImage {
 
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        const Rect.fromLTWH(90, 1160, 900, 105),
+        const Rect.fromLTWH(580, 975, 175, 8),
+        const Radius.circular(99),
+      ),
+      Paint()..color = DyfalaPalette.yellow,
+    );
+
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        const Rect.fromLTWH(80, 1040, 920, 92),
         const Radius.circular(46),
       ),
       Paint()..color = DyfalaPalette.red,
@@ -145,7 +162,7 @@ class DyfalaShareImage {
     _drawText(
       canvas,
       'Learning Welsh, one word at a time',
-      y: 1194,
+      y: 1068,
       width: width,
       size: 31,
       colour: Colors.white,
@@ -185,7 +202,7 @@ class DyfalaShareImage {
   }
 
   static void _drawStars(Canvas canvas, int stars, double width) {
-    const y = 326.0;
+    const y = 290.0;
     const spacing = 210.0;
     final start = width / 2 - spacing;
 
@@ -231,20 +248,20 @@ class DyfalaShareImage {
     if (tileCount == 0 || rows.isEmpty) return;
 
     const colGap = 14.0;
-    const rowGap = 12.0;
-    const maxGridWidth = 860.0;
-    const maxGridHeight = 390.0;
+    const rowGap = 10.0;
+    const maxGridWidth = 900.0;
+    const maxGridHeight = 400.0;
 
     final byWidth =
         (maxGridWidth - math.max(0, tileCount - 1) * colGap) / tileCount;
     final byHeight =
         (maxGridHeight - math.max(0, rows.length - 1) * rowGap) / rows.length;
-    final tile = math.min(128.0, math.min(byWidth, byHeight));
+    final tile = math.min(138.0, math.min(byWidth, byHeight));
 
     final gridWidth = tileCount * tile + (tileCount - 1) * colGap;
     final gridHeight = rows.length * tile + (rows.length - 1) * rowGap;
     final left = (1080 - gridWidth) / 2;
-    final top = 540 + (maxGridHeight - gridHeight) / 2;
+    final top = 470 + (maxGridHeight - gridHeight) / 2;
 
     for (var row = 0; row < rows.length; row++) {
       final guess = rows[row];
@@ -306,11 +323,12 @@ class DyfalaShareImage {
     final painter = TextPainter(
       text: TextSpan(
         text: text,
-        style: TextStyle(
+        style: GoogleFonts.fredoka(
           color: colour,
           fontSize: size,
           fontWeight: weight,
           letterSpacing: letterSpacing,
+          height: 1.05,
         ),
       ),
       maxLines: 1,
@@ -340,11 +358,12 @@ class DyfalaShareImage {
     final painter = TextPainter(
       text: TextSpan(
         text: text,
-        style: TextStyle(
+        style: GoogleFonts.fredoka(
           color: colour,
           fontSize: size,
           fontWeight: weight,
           letterSpacing: letterSpacing,
+          height: 1.05,
         ),
       ),
       maxLines: 2,

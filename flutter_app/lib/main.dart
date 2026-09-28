@@ -7,6 +7,7 @@ import 'screens/home_screen.dart';
 import 'screens/result_screen.dart';
 import 'theme/dyfala_theme.dart';
 import 'widgets/welsh_landscape.dart';
+import 'widgets/approved_logo.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -103,14 +104,9 @@ class _LoadingScreen extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Image.asset(
-                        'assets/brand/dyfala-logo.png',
-                        width: 270,
-                        fit: BoxFit.contain,
-                        filterQuality: FilterQuality.high,
-                      ),
+                    const ApprovedDyfalaLogo(
+                      height: 82,
+                      maxWidth: 300,
                     ),
                     const SizedBox(height: 22),
                     const SizedBox(

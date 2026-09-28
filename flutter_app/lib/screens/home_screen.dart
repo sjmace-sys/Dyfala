@@ -9,6 +9,7 @@ import '../game/game_controller.dart';
 import '../localisation/app_language.dart';
 import '../theme/dyfala_theme.dart';
 import '../widgets/language_toggle.dart';
+import '../widgets/approved_logo.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, required this.controller});
@@ -289,33 +290,65 @@ class _SignpostShareOverlay extends StatelessWidget {
           child: Stack(
             children: [
               Positioned(
-                left: 92,
-                top: 938,
-                width: 294,
-                height: 62,
+                left: -6,
+                top: 914,
+                width: 430,
+                height: 96,
                 child: Transform.rotate(
-                  angle: -.035,
-                  child: Container(
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Color(0xFFFFC94C),
-                          Color(0xFFFFB933),
-                        ],
+                  angle: -.032,
+                  alignment: Alignment.centerLeft,
+                  child: ClipPath(
+                    clipper: const _SignArrowClipper(),
+                    child: DecoratedBox(
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Color(0xFFFFD45B),
+                            Color(0xFFFFBC33),
+                          ],
+                        ),
                       ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      label,
-                      style: GoogleFonts.fredoka(
-                        color: DyfalaPalette.navy,
-                        fontSize: 39,
-                        height: 1,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: .4,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          const Positioned(
+                            left: 12,
+                            right: 66,
+                            top: 20,
+                            child: Divider(
+                              height: 1,
+                              thickness: 2,
+                              color: Color(0x22A06B18),
+                            ),
+                          ),
+                          const Positioned(
+                            left: 20,
+                            right: 76,
+                            bottom: 18,
+                            child: Divider(
+                              height: 1,
+                              thickness: 2,
+                              color: Color(0x18A06B18),
+                            ),
+                          ),
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 48),
+                              child: Text(
+                                label,
+                                style: GoogleFonts.fredoka(
+                                  color: DyfalaPalette.navy,
+                                  fontSize: 42,
+                                  height: 1,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: .5,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -327,6 +360,25 @@ class _SignpostShareOverlay extends StatelessWidget {
       ),
     );
   }
+}
+
+class _SignArrowClipper extends CustomClipper<Path> {
+  const _SignArrowClipper();
+
+  @override
+  Path getClip(Size size) {
+    final tip = size.height * .78;
+    return Path()
+      ..moveTo(0, 0)
+      ..lineTo(size.width - tip, 0)
+      ..lineTo(size.width, size.height / 2)
+      ..lineTo(size.width - tip, size.height)
+      ..lineTo(0, size.height)
+      ..close();
+  }
+
+  @override
+  bool shouldReclip(covariant _SignArrowClipper oldClipper) => false;
 }
 
 class _HelpPage extends StatelessWidget {
@@ -356,17 +408,9 @@ class _HelpPage extends StatelessWidget {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Center(
-                          child: SizedBox(
-                            width: 136,
-                            height: 48,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 4),
-                              child: Image.asset(
-                                'assets/brand/dyfala-logo.png',
-                                fit: BoxFit.contain,
-                                filterQuality: FilterQuality.high,
-                              ),
-                            ),
+                          child: const ApprovedDyfalaLogo(
+                            height: 56,
+                            maxWidth: 180,
                           ),
                         ),
                       ),

@@ -6,6 +6,7 @@ import '../game/game_controller.dart';
 import '../game/game_engine.dart';
 import '../theme/dyfala_theme.dart';
 import '../widgets/tile_board.dart';
+import '../widgets/approved_logo.dart';
 import '../widgets/welsh_keyboard.dart';
 
 class GameScreen extends StatelessWidget {
@@ -132,16 +133,9 @@ class GameScreen extends StatelessWidget {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Center(
-                          child: SizedBox(
-                            height: 50,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 4),
-                              child: Image.asset(
-                                'assets/brand/dyfala-logo.png',
-                                fit: BoxFit.contain,
-                                filterQuality: FilterQuality.high,
-                              ),
-                            ),
+                          child: const ApprovedDyfalaLogo(
+                            height: 58,
+                            maxWidth: 190,
                           ),
                         ),
                       ),

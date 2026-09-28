@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../localisation/app_language.dart';
 import '../theme/dyfala_theme.dart';
+import '../widgets/approved_logo.dart';
 import 'ad_service.dart';
 
 class AdBreakScreen extends StatefulWidget {
@@ -69,16 +70,9 @@ class _AdBreakScreenState extends State<AdBreakScreen>
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(
-                    height: 68,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 5),
-                      child: Image.asset(
-                        'assets/brand/dyfala-logo.png',
-                        fit: BoxFit.contain,
-                        filterQuality: FilterQuality.high,
-                      ),
-                    ),
+                  const ApprovedDyfalaLogo(
+                    height: 82,
+                    maxWidth: 280,
                   ),
                   const SizedBox(height: 18),
                   Text(

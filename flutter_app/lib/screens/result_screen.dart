@@ -10,6 +10,7 @@ import '../game/game_controller.dart';
 import '../game/game_engine.dart';
 import '../share/share_image.dart';
 import '../theme/dyfala_theme.dart';
+import '../widgets/approved_logo.dart';
 
 class ResultScreen extends StatefulWidget {
   const ResultScreen({super.key, required this.controller});
@@ -122,16 +123,9 @@ class _ResultScreenState extends State<ResultScreen> {
                           const SizedBox(width: 8),
                           Expanded(
                             child: Center(
-                              child: SizedBox(
-                                height: 50,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 4),
-                                  child: Image.asset(
-                                    'assets/brand/dyfala-logo.png',
-                                    fit: BoxFit.contain,
-                                    filterQuality: FilterQuality.high,
-                                  ),
-                                ),
+                              child: const ApprovedDyfalaLogo(
+                                height: 58,
+                                maxWidth: 190,
                               ),
                             ),
                           ),
@@ -141,13 +135,16 @@ class _ResultScreenState extends State<ResultScreen> {
                       ),
                     ),
                     Expanded(
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.fromLTRB(16, 10, 16, 20),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
                         child: Center(
-                          child: ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 390),
-                            child: Container(
-                              padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.topCenter,
+                            child: SizedBox(
+                              width: 390,
+                              child: Container(
+                              padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
                               decoration: BoxDecoration(
                                 color: const Color(0xFFFFFDF8).withOpacity(.96),
                                 borderRadius: BorderRadius.circular(28),
@@ -178,7 +175,7 @@ class _ResultScreenState extends State<ResultScreen> {
                                     stars: controller.resultStars,
                                     hintsText: strings.hintsUsedText(controller.hintsUsed),
                                   ),
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: 7),
                                   Text(
                                     controller.practiceMode
                                         ? '${strings.practiceMode} · ${controller.learnerStage}'
@@ -192,9 +189,9 @@ class _ResultScreenState extends State<ResultScreen> {
                                       fontWeight: FontWeight.w800,
                                     ),
                                   ),
-                                  const SizedBox(height: 14),
+                                  const SizedBox(height: 9),
                                   _LearningCard(controller: controller),
-                                  const SizedBox(height: 12),
+                                  const SizedBox(height: 8),
                                   if (!controller.practiceMode)
                                     Text(
                                       strings.nextWord(clock),
@@ -205,14 +202,14 @@ class _ResultScreenState extends State<ResultScreen> {
                                         fontWeight: FontWeight.w900,
                                       ),
                                     ),
-                                  if (!controller.practiceMode) const SizedBox(height: 10),
+                                  if (!controller.practiceMode) const SizedBox(height: 7),
                                   _CenteredActionButton(
                                     label: strings.share,
                                     icon: Icons.ios_share_rounded,
                                     colour: DyfalaPalette.red,
                                     onTap: () => _share(context),
                                   ),
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: 7),
                                   _CenteredActionButton(
                                     label: strings.tryAnother,
                                     icon: Icons.refresh_rounded,
@@ -220,6 +217,7 @@ class _ResultScreenState extends State<ResultScreen> {
                                     onTap: controller.tryAnotherWord,
                                   ),
                                 ],
+                              ),
                               ),
                             ),
                           ),
@@ -282,7 +280,7 @@ class _CenteredActionButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(999),
         child: SizedBox(
           width: double.infinity,
-          height: 52,
+          height: 48,
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -384,7 +382,7 @@ class _LearningCard extends StatelessWidget {
     final strings = controller.strings;
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       decoration: BoxDecoration(
         color: const Color(0xFFFFFCF7),
         borderRadius: BorderRadius.circular(24),
@@ -406,7 +404,7 @@ class _LearningCard extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 7),
           Text(
             controller.puzzle.answer,
             style: GoogleFonts.fredoka(
@@ -417,7 +415,7 @@ class _LearningCard extends StatelessWidget {
               letterSpacing: 1,
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 7),
           Text(
             strings.englishMeaning.toUpperCase(),
             style: GoogleFonts.nunitoSans(
@@ -438,7 +436,7 @@ class _LearningCard extends StatelessWidget {
             ),
           ),
           const Padding(
-            padding: EdgeInsets.symmetric(vertical: 12),
+            padding: EdgeInsets.symmetric(vertical: 8),
             child: Divider(height: 1),
           ),
           Text(
