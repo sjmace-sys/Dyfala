@@ -46,7 +46,7 @@ class HomeScreen extends StatelessWidget {
                     child: const _WelshHomeCopyOverlay(),
                   ),
                 ),
-                _SignpostShareOverlay(language: controller.uiLanguage),
+                const _WelshSignpostOverlay(),
               ],
             ),
           ),
@@ -271,15 +271,11 @@ class _WelshSidePhrase extends StatelessWidget {
   }
 }
 
-class _SignpostShareOverlay extends StatelessWidget {
-  const _SignpostShareOverlay({required this.language});
-
-  final UiLanguage language;
+class _WelshSignpostOverlay extends StatelessWidget {
+  const _WelshSignpostOverlay();
 
   @override
   Widget build(BuildContext context) {
-    final label = language == UiLanguage.welsh ? 'RHANNU' : 'SHARE';
-
     return IgnorePointer(
       child: FittedBox(
         fit: BoxFit.cover,
@@ -289,91 +285,210 @@ class _SignpostShareOverlay extends StatelessWidget {
           height: 1672,
           child: Stack(
             children: [
+              // Rebuild the whole signpost as one illustration so the three
+              // boards belong together and the baked-in old third label is
+              // completely covered in both EN and CY modes.
               Positioned(
-                left: -8,
-                top: 920,
-                width: 392,
-                height: 82,
+                left: 108,
+                top: 706,
+                width: 70,
+                height: 360,
                 child: Transform.rotate(
-                  angle: -.026,
-                  alignment: Alignment.centerLeft,
-                  child: DecoratedBox(
+                  angle: .012,
+                  child: Container(
                     decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      gradient: const LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        colors: [
+                          Color(0xFF8A4A1D),
+                          Color(0xFFB86C2C),
+                          Color(0xFF8E4C1E),
+                        ],
+                      ),
                       boxShadow: const [
                         BoxShadow(
-                          color: Color(0x22071A27),
+                          color: Color(0x28071A27),
                           blurRadius: 6,
-                          offset: Offset(0, 4),
+                          offset: Offset(3, 4),
                         ),
                       ],
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: ClipPath(
-                      clipper: const _SignArrowClipper(),
-                      child: DecoratedBox(
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Color(0xFFFFD45A),
-                              Color(0xFFFFBE36),
-                            ],
-                          ),
-                        ),
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            const Positioned(
-                              left: 12,
-                              right: 70,
-                              top: 17,
-                              child: Divider(
-                                height: 1,
-                                thickness: 1.5,
-                                color: Color(0x24A66E17),
-                              ),
-                            ),
-                            const Positioned(
-                              left: 24,
-                              right: 88,
-                              bottom: 16,
-                              child: Divider(
-                                height: 1,
-                                thickness: 1.5,
-                                color: Color(0x18A66E17),
-                              ),
-                            ),
-                            Positioned(
-                              left: 28,
-                              right: 72,
-                              top: 0,
-                              bottom: 0,
-                              child: Center(
-                                child: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Text(
-                                    label,
-                                    maxLines: 1,
-                                    style: GoogleFonts.fredoka(
-                                      color: DyfalaPalette.navy,
-                                      fontSize: 39,
-                                      height: 1,
-                                      fontWeight: FontWeight.w700,
-                                      letterSpacing: .3,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                     ),
                   ),
                 ),
               ),
+              const Positioned(
+                left: -12,
+                top: 748,
+                child: _IllustratedSign(
+                  text: 'DYSGU',
+                  width: 390,
+                  height: 82,
+                  start: Color(0xFFE51D2E),
+                  end: Color(0xFFC91527),
+                  foreground: Colors.white,
+                  angle: -.018,
+                ),
+              ),
+              const Positioned(
+                left: -4,
+                top: 836,
+                child: _IllustratedSign(
+                  text: 'CHWARAE',
+                  width: 398,
+                  height: 82,
+                  start: Color(0xFF0BA56F),
+                  end: Color(0xFF07885D),
+                  foreground: Colors.white,
+                  angle: -.010,
+                ),
+              ),
+              const Positioned(
+                left: -10,
+                top: 924,
+                child: _IllustratedSign(
+                  text: 'RHANNU',
+                  width: 410,
+                  height: 82,
+                  start: Color(0xFFFFD04B),
+                  end: Color(0xFFF5B82C),
+                  foreground: DyfalaPalette.navy,
+                  angle: -.014,
+                ),
+              ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _IllustratedSign extends StatelessWidget {
+  const _IllustratedSign({
+    required this.text,
+    required this.width,
+    required this.height,
+    required this.start,
+    required this.end,
+    required this.foreground,
+    required this.angle,
+  });
+
+  final String text;
+  final double width;
+  final double height;
+  final Color start;
+  final Color end;
+  final Color foreground;
+  final double angle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.rotate(
+      angle: angle,
+      alignment: Alignment.centerLeft,
+      child: SizedBox(
+        width: width,
+        height: height,
+        child: DecoratedBox(
+          decoration: const BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Color(0x26071A27),
+                blurRadius: 6,
+                offset: Offset(2, 4),
+              ),
+            ],
+          ),
+          child: ClipPath(
+            clipper: const _SignArrowClipper(),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [start, end],
+                ),
+              ),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Positioned(
+                    left: 18,
+                    right: 70,
+                    top: 15,
+                    child: Container(
+                      height: 2,
+                      color: Colors.white.withOpacity(.10),
+                    ),
+                  ),
+                  Positioned(
+                    left: 26,
+                    right: 88,
+                    bottom: 15,
+                    child: Container(
+                      height: 2,
+                      color: const Color(0xFF5F3A18).withOpacity(.10),
+                    ),
+                  ),
+                  Positioned(
+                    left: 31,
+                    top: 21,
+                    child: Container(
+                      width: 7,
+                      height: 7,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF5F3A18).withOpacity(.18),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    right: 82,
+                    bottom: 20,
+                    child: Container(
+                      width: 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF5F3A18).withOpacity(.16),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 32,
+                    right: 74,
+                    top: 0,
+                    bottom: 0,
+                    child: Center(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          text,
+                          maxLines: 1,
+                          style: GoogleFonts.fredoka(
+                            color: foreground,
+                            fontSize: 43,
+                            height: 1,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: .25,
+                            shadows: const [
+                              Shadow(
+                                color: Color(0x22071A27),
+                                offset: Offset(0, 1),
+                                blurRadius: 1,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -386,13 +501,15 @@ class _SignArrowClipper extends CustomClipper<Path> {
 
   @override
   Path getClip(Size size) {
-    final tip = size.height * .72;
+    final tip = size.height * .74;
     return Path()
-      ..moveTo(0, 0)
+      ..moveTo(0, 3)
+      ..quadraticBezierTo(0, 0, 4, 0)
       ..lineTo(size.width - tip, 0)
       ..lineTo(size.width, size.height / 2)
       ..lineTo(size.width - tip, size.height)
-      ..lineTo(0, size.height)
+      ..lineTo(4, size.height)
+      ..quadraticBezierTo(0, size.height, 0, size.height - 4)
       ..close();
   }
 
