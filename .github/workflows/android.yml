@@ -30,10 +30,6 @@ jobs:
         working-directory: flutter_app
         run: base64 --decode android/app/dyfala-test.keystore.b64 > android/app/dyfala-test.keystore
 
-      - name: Apply Build 69 visual fixes
-        working-directory: flutter_app
-        run: python3 tool/build69_patch.py
-
       - name: Get packages
         working-directory: flutter_app
         run: flutter pub get
