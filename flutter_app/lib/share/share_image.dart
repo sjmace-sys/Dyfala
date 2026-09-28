@@ -13,73 +13,58 @@ import '../theme/dyfala_theme.dart';
 class DyfalaShareImage {
   const DyfalaShareImage._();
 
-  static Future<File> create(GameController controller) async {
-    const width = 1080.0;
-    const height = 1200.0;
+  static const double _width = 1080;
+  static const double _height = 1080;
 
-    final approvedLogo = await _loadAssetImage('assets/brand/dyfala-logo.png');
+  static Future<File> create(GameController controller) async {
+    final approvedLogo =
+        await _loadAssetImage('assets/approved/home-logo.png');
 
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
 
-    final background = Paint()..color = DyfalaPalette.cream;
-    canvas.drawRect(const Rect.fromLTWH(0, 0, width, height), background);
+    canvas.drawRect(
+      const Rect.fromLTWH(0, 0, _width, _height),
+      Paint()..color = DyfalaPalette.cream,
+    );
 
-    _drawDecor(canvas, width, height);
+    _drawDecor(canvas);
 
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        const Rect.fromLTWH(24, 24, 1032, 1152),
-        const Radius.circular(48),
+        const Rect.fromLTWH(24, 24, 1032, 1032),
+        const Radius.circular(50),
       ),
-      Paint()..color = const Color(0xFFFFFDF8).withOpacity(.94),
+      Paint()..color = const Color(0xFFFFFDF8).withOpacity(.97),
     );
 
-    final logoRect = _containRect(
-      Size(approvedLogo.width.toDouble(), approvedLogo.height.toDouble()),
-      const Rect.fromLTWH(190, 48, 700, 145),
-    );
-    canvas.drawImageRect(
+    _drawCroppedLogo(
+      canvas,
       approvedLogo,
-      Rect.fromLTWH(
-        0,
-        0,
-        approvedLogo.width.toDouble(),
-        approvedLogo.height.toDouble(),
-      ),
-      logoRect,
-      Paint()..filterQuality = FilterQuality.high,
-    );
-
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        const Rect.fromLTWH(382, 171, 316, 15),
-        const Radius.circular(99),
-      ),
-      Paint()..color = DyfalaPalette.yellow,
+      const Rect.fromLTWH(185, 42, 710, 152),
     );
 
     _drawText(
       canvas,
-      controller.practiceMode ? 'PRACTICE WORD' : 'DAILY WELSH WORD #${controller.puzzleNumber}',
-      y: 202,
-      width: width,
-      size: 27,
+      controller.practiceMode
+          ? 'PRACTICE WORD'
+          : 'DAILY WELSH WORD #${controller.puzzleNumber}',
+      y: 190,
+      size: 29,
       colour: DyfalaPalette.inkSoft,
-      weight: FontWeight.w800,
-      letterSpacing: 2.0,
+      weight: FontWeight.w700,
+      letterSpacing: 1.5,
     );
 
-    _drawStars(canvas, controller.resultStars, width);
+    _drawStars(canvas, controller.resultStars);
 
     _drawText(
       canvas,
       '${controller.resultStars} ${controller.resultStars == 1 ? 'STAR' : 'STARS'}',
-      y: 368,
-      width: width,
-      size: 48,
+      y: 355,
+      size: 47,
       colour: DyfalaPalette.navy,
-      weight: FontWeight.w900,
+      weight: FontWeight.w700,
     );
 
     final result = controller.won
@@ -88,11 +73,10 @@ class DyfalaShareImage {
     _drawText(
       canvas,
       result,
-      y: 423,
-      width: width,
-      size: 34,
+      y: 410,
+      size: 35,
       colour: DyfalaPalette.greenDark,
-      weight: FontWeight.w800,
+      weight: FontWeight.w600,
     );
 
     _drawGrid(canvas, controller);
@@ -102,59 +86,40 @@ class DyfalaShareImage {
       controller.hintsUsed == 0
           ? 'No hints needed'
           : '${controller.hintsUsed} ${controller.hintsUsed == 1 ? 'hint' : 'hints'} used',
-      y: 855,
-      width: width,
-      size: 29,
+      y: 790,
+      size: 30,
       colour: DyfalaPalette.inkSoft,
-      weight: FontWeight.w700,
+      weight: FontWeight.w600,
     );
 
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        const Rect.fromLTWH(105, 910, 870, 92),
-        const Radius.circular(40),
+        const Rect.fromLTWH(105, 842, 870, 100),
+        const Radius.circular(44),
       ),
-      Paint()..color = const Color(0xFFFFF7E5),
+      Paint()..color = const Color(0xFFFFF3D6),
     );
 
     _drawTextInRect(
       canvas,
       'PLAYED ON',
-      const Rect.fromLTWH(155, 934, 260, 38),
-      size: 27,
+      const Rect.fromLTWH(150, 870, 270, 44),
+      size: 31,
       colour: DyfalaPalette.inkSoft,
-      weight: FontWeight.w900,
-      letterSpacing: 1.4,
+      weight: FontWeight.w700,
+      letterSpacing: .8,
     );
 
-    final playedLogoRect = _containRect(
-      Size(approvedLogo.width.toDouble(), approvedLogo.height.toDouble()),
-      const Rect.fromLTWH(438, 924, 460, 62),
-    );
-    canvas.drawImageRect(
+    _drawCroppedLogo(
+      canvas,
       approvedLogo,
-      Rect.fromLTWH(
-        0,
-        0,
-        approvedLogo.width.toDouble(),
-        approvedLogo.height.toDouble(),
-      ),
-      playedLogoRect,
-      Paint()..filterQuality = FilterQuality.high,
+      const Rect.fromLTWH(445, 858, 430, 68),
     );
 
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        const Rect.fromLTWH(580, 975, 175, 8),
-        const Radius.circular(99),
-      ),
-      Paint()..color = DyfalaPalette.yellow,
-    );
-
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        const Rect.fromLTWH(80, 1040, 920, 92),
-        const Radius.circular(46),
+        const Rect.fromLTWH(80, 968, 920, 76),
+        const Radius.circular(38),
       ),
       Paint()..color = DyfalaPalette.red,
     );
@@ -162,15 +127,14 @@ class DyfalaShareImage {
     _drawText(
       canvas,
       'Learning Welsh, one word at a time',
-      y: 1068,
-      width: width,
-      size: 31,
+      y: 986,
+      size: 29,
       colour: Colors.white,
-      weight: FontWeight.w800,
+      weight: FontWeight.w600,
     );
 
     final picture = recorder.endRecording();
-    final image = await picture.toImage(width.toInt(), height.toInt());
+    final image = await picture.toImage(_width.toInt(), _height.toInt());
     final data = await image.toByteData(format: ui.ImageByteFormat.png);
     if (data == null) {
       throw StateError('Could not create share image.');
@@ -183,32 +147,32 @@ class DyfalaShareImage {
     return file;
   }
 
-  static void _drawDecor(Canvas canvas, double width, double height) {
+  static void _drawDecor(Canvas canvas) {
     canvas.drawCircle(
-      const Offset(86, 94),
-      118,
-      Paint()..color = DyfalaPalette.red.withOpacity(.10),
+      const Offset(70, 80),
+      105,
+      Paint()..color = DyfalaPalette.red.withOpacity(.09),
     );
     canvas.drawCircle(
-      Offset(width - 40, 325),
-      145,
-      Paint()..color = DyfalaPalette.yellow.withOpacity(.12),
+      const Offset(1040, 255),
+      125,
+      Paint()..color = DyfalaPalette.yellow.withOpacity(.11),
     );
     canvas.drawCircle(
-      Offset(90, height - 70),
-      165,
-      Paint()..color = DyfalaPalette.green.withOpacity(.10),
+      const Offset(60, 1015),
+      130,
+      Paint()..color = DyfalaPalette.green.withOpacity(.09),
     );
   }
 
-  static void _drawStars(Canvas canvas, int stars, double width) {
-    const y = 290.0;
-    const spacing = 210.0;
-    final start = width / 2 - spacing;
+  static void _drawStars(Canvas canvas, int stars) {
+    const y = 286.0;
+    const spacing = 205.0;
+    final start = _width / 2 - spacing;
 
     for (var index = 0; index < 3; index++) {
       final center = Offset(start + spacing * index, y);
-      final path = _starPath(center, 82, 37);
+      final path = _starPath(center, 72, 32);
       final earned = index < stars;
       if (earned) {
         canvas.drawPath(path, Paint()..color = DyfalaPalette.yellow);
@@ -247,21 +211,26 @@ class DyfalaShareImage {
     final rows = controller.guesses;
     if (tileCount == 0 || rows.isEmpty) return;
 
+    const maxWidth = 780.0;
+    const maxHeight = 300.0;
     const colGap = 14.0;
     const rowGap = 10.0;
-    const maxGridWidth = 900.0;
-    const maxGridHeight = 400.0;
 
-    final byWidth =
-        (maxGridWidth - math.max(0, tileCount - 1) * colGap) / tileCount;
-    final byHeight =
-        (maxGridHeight - math.max(0, rows.length - 1) * rowGap) / rows.length;
-    final tile = math.min(138.0, math.min(byWidth, byHeight));
+    final tileWidth = math.min(
+      122.0,
+      (maxWidth - math.max(0, tileCount - 1) * colGap) / tileCount,
+    );
+    final tileHeight = math.min(
+      62.0,
+      (maxHeight - math.max(0, rows.length - 1) * rowGap) / rows.length,
+    );
 
-    final gridWidth = tileCount * tile + (tileCount - 1) * colGap;
-    final gridHeight = rows.length * tile + (rows.length - 1) * rowGap;
-    final left = (1080 - gridWidth) / 2;
-    final top = 470 + (maxGridHeight - gridHeight) / 2;
+    final gridWidth =
+        tileCount * tileWidth + math.max(0, tileCount - 1) * colGap;
+    final gridHeight =
+        rows.length * tileHeight + math.max(0, rows.length - 1) * rowGap;
+    final left = (_width - gridWidth) / 2;
+    final top = 465 + (maxHeight - gridHeight) / 2;
 
     for (var row = 0; row < rows.length; row++) {
       final guess = rows[row];
@@ -273,15 +242,16 @@ class DyfalaShareImage {
         };
 
         final rect = Rect.fromLTWH(
-          left + col * (tile + colGap),
-          top + row * (tile + rowGap),
-          tile,
-          tile,
+          left + col * (tileWidth + colGap),
+          top + row * (tileHeight + rowGap),
+          tileWidth,
+          tileHeight,
         );
+
         canvas.drawRRect(
           RRect.fromRectAndRadius(
             rect,
-            Radius.circular(math.min(22.0, tile * .18)),
+            Radius.circular(math.min(18, tileHeight * .28)),
           ),
           Paint()..color = colour,
         );
@@ -294,6 +264,30 @@ class DyfalaShareImage {
     final codec = await ui.instantiateImageCodec(data.buffer.asUint8List());
     final frame = await codec.getNextFrame();
     return frame.image;
+  }
+
+  static void _drawCroppedLogo(
+    Canvas canvas,
+    ui.Image image,
+    Rect destination,
+  ) {
+    final sourceWidth = image.width * .92;
+    final source = Rect.fromLTWH(
+      0,
+      0,
+      sourceWidth,
+      image.height.toDouble(),
+    );
+    final fitted = _containRect(
+      Size(sourceWidth, image.height.toDouble()),
+      destination,
+    );
+    canvas.drawImageRect(
+      image,
+      source,
+      fitted,
+      Paint()..filterQuality = FilterQuality.high,
+    );
   }
 
   static Rect _containRect(Size source, Rect destination) {
@@ -328,7 +322,7 @@ class DyfalaShareImage {
           fontSize: size,
           fontWeight: weight,
           letterSpacing: letterSpacing,
-          height: 1.05,
+          height: 1,
         ),
       ),
       maxLines: 1,
@@ -349,7 +343,6 @@ class DyfalaShareImage {
     Canvas canvas,
     String text, {
     required double y,
-    required double width,
     required double size,
     required Color colour,
     required FontWeight weight,
@@ -369,8 +362,11 @@ class DyfalaShareImage {
       maxLines: 2,
       textAlign: TextAlign.center,
       textDirection: TextDirection.ltr,
-    )..layout(maxWidth: width - 88);
+    )..layout(maxWidth: _width - 100);
 
-    painter.paint(canvas, Offset((width - painter.width) / 2, y));
+    painter.paint(
+      canvas,
+      Offset((_width - painter.width) / 2, y),
+    );
   }
 }

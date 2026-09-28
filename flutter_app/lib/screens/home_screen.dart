@@ -290,65 +290,84 @@ class _SignpostShareOverlay extends StatelessWidget {
           child: Stack(
             children: [
               Positioned(
-                left: -6,
-                top: 914,
-                width: 430,
-                height: 96,
+                left: -8,
+                top: 920,
+                width: 392,
+                height: 82,
                 child: Transform.rotate(
-                  angle: -.032,
+                  angle: -.026,
                   alignment: Alignment.centerLeft,
-                  child: ClipPath(
-                    clipper: const _SignArrowClipper(),
-                    child: DecoratedBox(
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Color(0xFFFFD45B),
-                            Color(0xFFFFBC33),
-                          ],
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0x22071A27),
+                          blurRadius: 6,
+                          offset: Offset(0, 4),
                         ),
-                      ),
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          const Positioned(
-                            left: 12,
-                            right: 66,
-                            top: 20,
-                            child: Divider(
-                              height: 1,
-                              thickness: 2,
-                              color: Color(0x22A06B18),
-                            ),
+                      ],
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: ClipPath(
+                      clipper: const _SignArrowClipper(),
+                      child: DecoratedBox(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Color(0xFFFFD45A),
+                              Color(0xFFFFBE36),
+                            ],
                           ),
-                          const Positioned(
-                            left: 20,
-                            right: 76,
-                            bottom: 18,
-                            child: Divider(
-                              height: 1,
-                              thickness: 2,
-                              color: Color(0x18A06B18),
+                        ),
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            const Positioned(
+                              left: 12,
+                              right: 70,
+                              top: 17,
+                              child: Divider(
+                                height: 1,
+                                thickness: 1.5,
+                                color: Color(0x24A66E17),
+                              ),
                             ),
-                          ),
-                          Center(
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 48),
-                              child: Text(
-                                label,
-                                style: GoogleFonts.fredoka(
-                                  color: DyfalaPalette.navy,
-                                  fontSize: 42,
-                                  height: 1,
-                                  fontWeight: FontWeight.w700,
-                                  letterSpacing: .5,
+                            const Positioned(
+                              left: 24,
+                              right: 88,
+                              bottom: 16,
+                              child: Divider(
+                                height: 1,
+                                thickness: 1.5,
+                                color: Color(0x18A66E17),
+                              ),
+                            ),
+                            Positioned(
+                              left: 28,
+                              right: 72,
+                              top: 0,
+                              bottom: 0,
+                              child: Center(
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    label,
+                                    maxLines: 1,
+                                    style: GoogleFonts.fredoka(
+                                      color: DyfalaPalette.navy,
+                                      fontSize: 39,
+                                      height: 1,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: .3,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -367,7 +386,7 @@ class _SignArrowClipper extends CustomClipper<Path> {
 
   @override
   Path getClip(Size size) {
-    final tip = size.height * .78;
+    final tip = size.height * .72;
     return Path()
       ..moveTo(0, 0)
       ..lineTo(size.width - tip, 0)

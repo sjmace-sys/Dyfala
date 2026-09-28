@@ -118,6 +118,29 @@ class GameScreen extends StatelessWidget {
           Positioned.fill(
             child: Container(color: DyfalaPalette.cream.withOpacity(.80)),
           ),
+          const Positioned(
+            left: 0,
+            right: 0,
+            top: 0,
+            height: 235,
+            child: IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0xFFFFF8EC),
+                      Color(0xFFFFF8EC),
+                      Color(0xF2FFF8EC),
+                      Color(0x00FFF8EC),
+                    ],
+                    stops: [0, .52, .72, 1],
+                  ),
+                ),
+              ),
+            ),
+          ),
           SafeArea(
             bottom: true,
             child: Column(

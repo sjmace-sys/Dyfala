@@ -42,7 +42,7 @@ class _DyfalaBootstrapState extends State<DyfalaBootstrap> {
     Future.wait([
       precacheImage(const AssetImage('assets/approved/home-en.png'), context),
       precacheImage(const AssetImage('assets/approved/home-cy.png'), context),
-      precacheImage(const AssetImage('assets/brand/dyfala-logo.png'), context),
+      precacheImage(const AssetImage('assets/approved/home-logo.png'), context),
       precacheImage(const AssetImage('assets/approved/home-scene.png'), context),
     ]).whenComplete(() {
       if (mounted) setState(() => _assetsReady = true);

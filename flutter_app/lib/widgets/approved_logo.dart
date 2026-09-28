@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../theme/dyfala_theme.dart';
-
 class ApprovedDyfalaLogo extends StatelessWidget {
   const ApprovedDyfalaLogo({
     super.key,
@@ -14,40 +12,30 @@ class ApprovedDyfalaLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final underlineWidth = height * 1.72;
-
-    Widget logo = SizedBox(
-      height: height,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Expanded(
-            child: Image.asset(
-              'assets/brand/dyfala-logo.png',
-              fit: BoxFit.contain,
-              filterQuality: FilterQuality.high,
-            ),
+    final logo = FittedBox(
+      fit: BoxFit.contain,
+      child: ClipRect(
+        child: Align(
+          alignment: Alignment.centerLeft,
+          widthFactor: .92,
+          child: Image.asset(
+            'assets/approved/home-logo.png',
+            width: 625,
+            height: 205,
+            fit: BoxFit.fill,
+            filterQuality: FilterQuality.high,
           ),
-          const SizedBox(height: 2),
-          Container(
-            width: underlineWidth,
-            height: height * .085,
-            decoration: BoxDecoration(
-              color: DyfalaPalette.yellow,
-              borderRadius: BorderRadius.circular(999),
-            ),
-          ),
-        ],
+        ),
       ),
     );
 
-    if (maxWidth != null) {
-      logo = ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: maxWidth!),
+    return Semantics(
+      label: 'Dyfala!',
+      child: SizedBox(
+        height: height,
+        width: maxWidth,
         child: logo,
-      );
-    }
-
-    return Semantics(label: 'Dyfala!', child: logo);
+      ),
+    );
   }
 }
