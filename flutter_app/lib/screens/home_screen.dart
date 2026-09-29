@@ -46,7 +46,7 @@ class HomeScreen extends StatelessWidget {
                     child: const _WelshHomeCopyOverlay(),
                   ),
                 ),
-                const _WelshSignpostOverlay(),
+                _HomeSignpostOverlay(language: controller.uiLanguage),
               ],
             ),
           ),
@@ -271,11 +271,18 @@ class _WelshSidePhrase extends StatelessWidget {
   }
 }
 
-class _WelshSignpostOverlay extends StatelessWidget {
-  const _WelshSignpostOverlay();
+class _HomeSignpostOverlay extends StatelessWidget {
+  const _HomeSignpostOverlay({required this.language});
+
+  final UiLanguage language;
 
   @override
   Widget build(BuildContext context) {
+    final isWelsh = language == UiLanguage.welsh;
+    final firstLabel = isWelsh ? 'DYSGU' : 'LEARN';
+    final secondLabel = isWelsh ? 'CHWARAE' : 'PLAY';
+    final thirdLabel = isWelsh ? 'RHANNU' : 'SHARE';
+
     return IgnorePointer(
       child: FittedBox(
         fit: BoxFit.cover,
@@ -318,11 +325,11 @@ class _WelshSignpostOverlay extends StatelessWidget {
                   ),
                 ),
               ),
-              const Positioned(
+              Positioned(
                 left: -12,
                 top: 748,
                 child: _IllustratedSign(
-                  text: 'DYSGU',
+                  text: firstLabel,
                   width: 390,
                   height: 82,
                   start: Color(0xFFE51D2E),
@@ -331,11 +338,11 @@ class _WelshSignpostOverlay extends StatelessWidget {
                   angle: -.018,
                 ),
               ),
-              const Positioned(
+              Positioned(
                 left: -4,
                 top: 836,
                 child: _IllustratedSign(
-                  text: 'CHWARAE',
+                  text: secondLabel,
                   width: 398,
                   height: 82,
                   start: Color(0xFF0BA56F),
@@ -344,11 +351,11 @@ class _WelshSignpostOverlay extends StatelessWidget {
                   angle: -.010,
                 ),
               ),
-              const Positioned(
+              Positioned(
                 left: -10,
                 top: 924,
                 child: _IllustratedSign(
-                  text: 'RHANNU',
+                  text: thirdLabel,
                   width: 410,
                   height: 82,
                   start: Color(0xFFFFD04B),
