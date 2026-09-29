@@ -33,6 +33,8 @@ flutter:
     - assets/approved/home-background-v10.png
     - assets/approved/home-en.png
     - assets/approved/home-cy.png
+    - assets/approved/home-en-final.webp
+    - assets/approved/home-cy-final.webp
     - assets/approved/help-en.png
     - assets/approved/help-cy.png
     - assets/mock_ads/wales-tourism.svg
