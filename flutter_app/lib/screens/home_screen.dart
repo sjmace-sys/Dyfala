@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -34,19 +32,15 @@ class HomeScreen extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 Image.asset(
-                  'assets/approved/home-en.png',
+                  controller.uiLanguage == UiLanguage.welsh
+                      ? 'assets/approved/home-cy.png'
+                      : 'assets/approved/home-en.png',
                   fit: BoxFit.cover,
                   alignment: Alignment.topCenter,
                   filterQuality: FilterQuality.high,
+                  gaplessPlayback: true,
                 ),
-                IgnorePointer(
-                  child: AnimatedOpacity(
-                    duration: const Duration(milliseconds: 140),
-                    opacity: controller.uiLanguage == UiLanguage.welsh ? 1 : 0,
-                    child: const _WelshHomeCopyOverlay(),
-                  ),
-                ),
-                _HomeSignpostOverlay(language: controller.uiLanguage),
+                const _HomeSignpostOverlay(),
               ],
             ),
           ),
@@ -136,153 +130,11 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _WelshHomeCopyOverlay extends StatelessWidget {
-  const _WelshHomeCopyOverlay();
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        ClipPath(
-          clipper: const _WelshMainCopyClipper(),
-          child: Image.asset(
-            'assets/approved/home-cy.png',
-            fit: BoxFit.cover,
-            alignment: Alignment.topCenter,
-            filterQuality: FilterQuality.high,
-            gaplessPlayback: true,
-          ),
-        ),
-        const _WelshSidePhrase(),
-      ],
-    );
-  }
-}
-
-class _WelshMainCopyClipper extends CustomClipper<Path> {
-  const _WelshMainCopyClipper();
-
-  static const double _sourceWidth = 941;
-  static const double _sourceHeight = 1672;
-
-  @override
-  Path getClip(Size size) {
-    final scale = math.max(
-      size.width / _sourceWidth,
-      size.height / _sourceHeight,
-    );
-    final renderedWidth = _sourceWidth * scale;
-    final dx = (size.width - renderedWidth) / 2;
-
-    Rect mapRect(double left, double top, double right, double bottom) {
-      return Rect.fromLTRB(
-        dx + left * scale,
-        top * scale,
-        dx + right * scale,
-        bottom * scale,
-      );
-    }
-
-    return Path()..addRect(mapRect(125, 292, 825, 552));
-  }
-
-  @override
-  bool shouldReclip(covariant _WelshMainCopyClipper oldClipper) => false;
-}
-
-class _WelshSidePhrase extends StatelessWidget {
-  const _WelshSidePhrase();
-
-  @override
-  Widget build(BuildContext context) {
-    return FittedBox(
-      fit: BoxFit.cover,
-      alignment: Alignment.topCenter,
-      child: SizedBox(
-        width: 941,
-        height: 1672,
-        child: Stack(
-          children: [
-            Positioned(
-              left: 500,
-              top: 560,
-              width: 350,
-              height: 185,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: RadialGradient(
-                    radius: .90,
-                    colors: [
-                      DyfalaPalette.cream,
-                      DyfalaPalette.cream,
-                      DyfalaPalette.cream.withOpacity(.98),
-                      DyfalaPalette.cream.withOpacity(0),
-                    ],
-                    stops: const [0, .56, .76, 1],
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              left: 525,
-              top: 594,
-              width: 295,
-              child: Transform.rotate(
-                angle: -.055,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Dysga air.',
-                      style: GoogleFonts.fredoka(
-                        color: DyfalaPalette.navy,
-                        fontSize: 39,
-                        height: .96,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      'Gwena fwy.',
-                      style: GoogleFonts.fredoka(
-                        color: DyfalaPalette.navy,
-                        fontSize: 39,
-                        height: .96,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      width: 238,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: DyfalaPalette.red,
-                        borderRadius: BorderRadius.circular(99),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _HomeSignpostOverlay extends StatelessWidget {
-  const _HomeSignpostOverlay({required this.language});
-
-  final UiLanguage language;
+  const _HomeSignpostOverlay();
 
   @override
   Widget build(BuildContext context) {
-    final isWelsh = language == UiLanguage.welsh;
-    final firstLabel = isWelsh ? 'DYSGU' : 'LEARN';
-    final secondLabel = isWelsh ? 'CHWARAE' : 'PLAY';
-    final thirdLabel = isWelsh ? 'RHANNU' : 'SHARE';
-
     return IgnorePointer(
       child: FittedBox(
         fit: BoxFit.cover,
@@ -296,10 +148,10 @@ class _HomeSignpostOverlay extends StatelessWidget {
               // boards belong together and the baked-in old third label is
               // completely covered in both EN and CY modes.
               Positioned(
-                left: 108,
-                top: 706,
+                left: 128,
+                top: 674,
                 width: 70,
-                height: 360,
+                height: 366,
                 child: Transform.rotate(
                   angle: .012,
                   child: Container(
@@ -326,11 +178,11 @@ class _HomeSignpostOverlay extends StatelessWidget {
                 ),
               ),
               Positioned(
-                left: -12,
-                top: 748,
+                left: 48,
+                top: 720,
                 child: _IllustratedSign(
-                  text: firstLabel,
-                  width: 390,
+                  text: 'DYSGU',
+                  width: 350,
                   height: 82,
                   start: Color(0xFFE51D2E),
                   end: Color(0xFFC91527),
@@ -339,11 +191,11 @@ class _HomeSignpostOverlay extends StatelessWidget {
                 ),
               ),
               Positioned(
-                left: -4,
-                top: 836,
+                left: 58,
+                top: 808,
                 child: _IllustratedSign(
-                  text: secondLabel,
-                  width: 398,
+                  text: 'CHWARAE',
+                  width: 350,
                   height: 82,
                   start: Color(0xFF0BA56F),
                   end: Color(0xFF07885D),
@@ -352,11 +204,11 @@ class _HomeSignpostOverlay extends StatelessWidget {
                 ),
               ),
               Positioned(
-                left: -10,
-                top: 924,
+                left: 56,
+                top: 896,
                 child: _IllustratedSign(
-                  text: thirdLabel,
-                  width: 410,
+                  text: 'RHANNU',
+                  width: 370,
                   height: 82,
                   start: Color(0xFFFFD04B),
                   end: Color(0xFFF5B82C),
