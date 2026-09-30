@@ -30,12 +30,6 @@ jobs:
         working-directory: flutter_app
         run: base64 --decode android/app/dyfala-test.keystore.b64 > android/app/dyfala-test.keystore
 
-      - name: Polish Build 66 home artwork
-        working-directory: flutter_app
-        run: |
-          python3 -m pip install --quiet pillow
-          python3 tool/build66_polish.py
-
       - name: Get packages
         working-directory: flutter_app
         run: flutter pub get
