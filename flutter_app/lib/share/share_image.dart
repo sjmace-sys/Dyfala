@@ -30,18 +30,10 @@ class DyfalaShareImage {
 
     _drawDecor(canvas);
 
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        const Rect.fromLTWH(24, 24, 1032, 1032),
-        const Radius.circular(50),
-      ),
-      Paint()..color = const Color(0xFFFFFDF8).withOpacity(.97),
-    );
-
     _drawCroppedLogo(
       canvas,
       approvedLogo,
-      const Rect.fromLTWH(185, 42, 710, 152),
+      const Rect.fromLTWH(210, 38, 660, 154),
     );
 
     _drawText(
@@ -49,8 +41,8 @@ class DyfalaShareImage {
       controller.practiceMode
           ? 'PRACTICE WORD'
           : 'DAILY WELSH WORD #${controller.puzzleNumber}',
-      y: 190,
-      size: 29,
+      y: 225,
+      size: 31,
       colour: DyfalaPalette.inkSoft,
       weight: FontWeight.w700,
       letterSpacing: 1.5,
@@ -61,19 +53,20 @@ class DyfalaShareImage {
     _drawText(
       canvas,
       '${controller.resultStars} ${controller.resultStars == 1 ? 'STAR' : 'STARS'}',
-      y: 355,
-      size: 47,
+      y: 385,
+      size: 46,
       colour: DyfalaPalette.navy,
       weight: FontWeight.w700,
     );
 
+    final attempts = controller.guesses.length;
     final result = controller.won
-        ? 'Solved in ${controller.guesses.length} / $maxGuesses'
-        : 'Good try · X / $maxGuesses';
+        ? 'Solved in $attempts/$maxGuesses'
+        : 'Good try - $attempts/$maxGuesses';
     _drawText(
       canvas,
       result,
-      y: 410,
+      y: 440,
       size: 35,
       colour: DyfalaPalette.greenDark,
       weight: FontWeight.w600,
@@ -86,51 +79,25 @@ class DyfalaShareImage {
       controller.hintsUsed == 0
           ? 'No hints needed'
           : '${controller.hintsUsed} ${controller.hintsUsed == 1 ? 'hint' : 'hints'} used',
-      y: 790,
-      size: 30,
+      y: 910,
+      size: 29,
       colour: DyfalaPalette.inkSoft,
       weight: FontWeight.w600,
     );
 
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        const Rect.fromLTWH(105, 842, 870, 100),
-        const Radius.circular(44),
-      ),
-      Paint()..color = const Color(0xFFFFF3D6),
-    );
-
     _drawTextInRect(
       canvas,
-      'PLAYED ON',
-      const Rect.fromLTWH(150, 870, 270, 44),
-      size: 31,
+      'Played on',
+      const Rect.fromLTWH(250, 964, 300, 58),
+      size: 38,
       colour: DyfalaPalette.inkSoft,
-      weight: FontWeight.w700,
-      letterSpacing: .8,
+      weight: FontWeight.w600,
     );
 
     _drawCroppedLogo(
       canvas,
       approvedLogo,
-      const Rect.fromLTWH(445, 858, 430, 68),
-    );
-
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        const Rect.fromLTWH(80, 968, 920, 76),
-        const Radius.circular(38),
-      ),
-      Paint()..color = DyfalaPalette.red,
-    );
-
-    _drawText(
-      canvas,
-      'Learning Welsh, one word at a time',
-      y: 986,
-      size: 29,
-      colour: Colors.white,
-      weight: FontWeight.w600,
+      const Rect.fromLTWH(535, 948, 300, 78),
     );
 
     final picture = recorder.endRecording();
@@ -149,30 +116,52 @@ class DyfalaShareImage {
 
   static void _drawDecor(Canvas canvas) {
     canvas.drawCircle(
-      const Offset(70, 80),
-      105,
+      const Offset(-18, 30),
+      185,
+      Paint()..color = DyfalaPalette.red.withOpacity(.10),
+    );
+    canvas.drawCircle(
+      const Offset(1105, 35),
+      180,
+      Paint()..color = DyfalaPalette.yellow.withOpacity(.12),
+    );
+    canvas.drawCircle(
+      const Offset(-5, 1115),
+      185,
+      Paint()..color = DyfalaPalette.green.withOpacity(.10),
+    );
+    canvas.drawCircle(
+      const Offset(1100, 1110),
+      170,
       Paint()..color = DyfalaPalette.red.withOpacity(.09),
     );
-    canvas.drawCircle(
-      const Offset(1040, 255),
-      125,
-      Paint()..color = DyfalaPalette.yellow.withOpacity(.11),
-    );
-    canvas.drawCircle(
-      const Offset(60, 1015),
-      130,
-      Paint()..color = DyfalaPalette.green.withOpacity(.09),
-    );
+
+    final yellowDash = Paint()
+      ..color = DyfalaPalette.yellow.withOpacity(.85)
+      ..strokeWidth = 13
+      ..strokeCap = StrokeCap.round;
+    canvas.drawLine(const Offset(120, 178), const Offset(150, 204), yellowDash);
+    canvas.drawLine(const Offset(158, 148), const Offset(178, 176), yellowDash);
+
+    final greenDash = Paint()
+      ..color = DyfalaPalette.greenLight.withOpacity(.26)
+      ..strokeWidth = 13
+      ..strokeCap = StrokeCap.round;
+    canvas.drawLine(const Offset(978, 236), const Offset(999, 208), greenDash);
+    canvas.drawLine(const Offset(1008, 272), const Offset(1038, 250), greenDash);
+
+    canvas.drawLine(const Offset(972, 892), const Offset(994, 918), yellowDash);
+    canvas.drawLine(const Offset(1004, 874), const Offset(1027, 901), yellowDash);
   }
 
   static void _drawStars(Canvas canvas, int stars) {
-    const y = 286.0;
-    const spacing = 205.0;
+    const y = 330.0;
+    const spacing = 142.0;
     final start = _width / 2 - spacing;
 
     for (var index = 0; index < 3; index++) {
       final center = Offset(start + spacing * index, y);
-      final path = _starPath(center, 72, 32);
+      final path = _starPath(center, 52, 23);
       final earned = index < stars;
       if (earned) {
         canvas.drawPath(path, Paint()..color = DyfalaPalette.yellow);
@@ -182,7 +171,7 @@ class DyfalaShareImage {
           Paint()
             ..color = DyfalaPalette.absent
             ..style = PaintingStyle.stroke
-            ..strokeWidth = 8,
+            ..strokeWidth = 7,
         );
       }
     }
@@ -211,26 +200,22 @@ class DyfalaShareImage {
     final rows = controller.guesses;
     if (tileCount == 0 || rows.isEmpty) return;
 
-    const maxWidth = 780.0;
-    const maxHeight = 300.0;
-    const colGap = 14.0;
-    const rowGap = 10.0;
+    const maxWidth = 520.0;
+    const maxHeight = 380.0;
+    const gap = 10.0;
 
-    final tileWidth = math.min(
-      122.0,
-      (maxWidth - math.max(0, tileCount - 1) * colGap) / tileCount,
-    );
-    final tileHeight = math.min(
-      62.0,
-      (maxHeight - math.max(0, rows.length - 1) * rowGap) / rows.length,
-    );
+    final widthLimited =
+        (maxWidth - math.max(0, tileCount - 1) * gap) / tileCount;
+    final heightLimited =
+        (maxHeight - math.max(0, rows.length - 1) * gap) / rows.length;
+    final tileSize = math.min(68.0, math.min(widthLimited, heightLimited));
 
     final gridWidth =
-        tileCount * tileWidth + math.max(0, tileCount - 1) * colGap;
+        tileCount * tileSize + math.max(0, tileCount - 1) * gap;
     final gridHeight =
-        rows.length * tileHeight + math.max(0, rows.length - 1) * rowGap;
+        rows.length * tileSize + math.max(0, rows.length - 1) * gap;
     final left = (_width - gridWidth) / 2;
-    final top = 465 + (maxHeight - gridHeight) / 2;
+    final top = 510 + (maxHeight - gridHeight) / 2;
 
     for (var row = 0; row < rows.length; row++) {
       final guess = rows[row];
@@ -242,16 +227,16 @@ class DyfalaShareImage {
         };
 
         final rect = Rect.fromLTWH(
-          left + col * (tileWidth + colGap),
-          top + row * (tileHeight + rowGap),
-          tileWidth,
-          tileHeight,
+          left + col * (tileSize + gap),
+          top + row * (tileSize + gap),
+          tileSize,
+          tileSize,
         );
 
         canvas.drawRRect(
           RRect.fromRectAndRadius(
             rect,
-            Radius.circular(math.min(18, tileHeight * .28)),
+            Radius.circular(math.min(12, tileSize * .18)),
           ),
           Paint()..color = colour,
         );
