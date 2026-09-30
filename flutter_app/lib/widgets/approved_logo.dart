@@ -17,7 +17,7 @@ class ApprovedDyfalaLogo extends StatelessWidget {
       child: ClipRect(
         child: Align(
           alignment: Alignment.centerLeft,
-          widthFactor: .92,
+          widthFactor: .91,
           child: Image.asset(
             'assets/approved/home-logo.png',
             width: 625,
