@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -30,33 +28,14 @@ class HomeScreen extends StatelessWidget {
             right: -3,
             top: -3,
             bottom: -3,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                // Build 65: keep one fixed illustration underneath both
-                // languages. Only the copy changes, so the scenery cannot
-                // shift when EN/CY is toggled.
-                Image.asset(
-                  'assets/approved/home-en-final.webp',
-                  fit: BoxFit.cover,
-                  alignment: Alignment.topCenter,
-                  filterQuality: FilterQuality.high,
-                  gaplessPlayback: true,
-                ),
-                if (controller.uiLanguage == UiLanguage.welsh)
-                  IgnorePointer(
-                    child: ClipPath(
-                      clipper: const _WelshCopyOnlyClipper(),
-                      child: Image.asset(
-                        'assets/approved/home-cy-final.webp',
-                        fit: BoxFit.cover,
-                        alignment: Alignment.topCenter,
-                        filterQuality: FilterQuality.high,
-                        gaplessPlayback: true,
-                      ),
-                    ),
-                  ),
-              ],
+            child: Image.asset(
+              controller.uiLanguage == UiLanguage.welsh
+                  ? 'assets/approved/home-cy-final.webp'
+                  : 'assets/approved/home-en-final.webp',
+              fit: BoxFit.cover,
+              alignment: Alignment.topCenter,
+              filterQuality: FilterQuality.high,
+              gaplessPlayback: true,
             ),
           ),
           SafeArea(
@@ -143,42 +122,6 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-class _WelshCopyOnlyClipper extends CustomClipper<Path> {
-  const _WelshCopyOnlyClipper();
-
-  static const double _sourceWidth = 941;
-  static const double _sourceHeight = 1672;
-
-  @override
-  Path getClip(Size size) {
-    final scale = math.max(
-      size.width / _sourceWidth,
-      size.height / _sourceHeight,
-    );
-    final renderedWidth = _sourceWidth * scale;
-    final dx = (size.width - renderedWidth) / 2;
-
-    Rect mapRect(double left, double top, double right, double bottom) {
-      return Rect.fromLTRB(
-        dx + left * scale,
-        top * scale,
-        dx + right * scale,
-        bottom * scale,
-      );
-    }
-
-    // These two areas contain only the language-specific home copy.
-    // Everything else — logo, sky, hills, dragon, signpost, path and
-    // decorative scenery — always comes from the exact same base image.
-    return Path()
-      ..addRect(mapRect(125, 292, 825, 552))
-      ..addRect(mapRect(500, 560, 835, 735));
-  }
-
-  @override
-  bool shouldReclip(covariant _WelshCopyOnlyClipper oldClipper) => false;
 }
 
 class _HelpPage extends StatelessWidget {
