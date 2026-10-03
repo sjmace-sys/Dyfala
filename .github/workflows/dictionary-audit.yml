@@ -25,6 +25,7 @@ jobs:
             'cy_GB.dic': 'https://raw.githubusercontent.com/techiaith/hunspell-cy/master/cy_GB.dic',
             'cy_GB.aff': 'https://raw.githubusercontent.com/techiaith/hunspell-cy/master/cy_GB.aff',
             'cy_GB_llafar.dic': 'https://raw.githubusercontent.com/techiaith/hunspell-cy-llafar/main/cy_GB_llafar.dic',
+            'vocab.cy.2500.frequencies.tsv': 'https://raw.githubusercontent.com/techiaith/geiriau-mwyaf-aml/main/vocab.cy.2500.frequencies.tsv',
           }
           for fn, url in urls.items():
               print('Downloading', url)
@@ -92,6 +93,7 @@ jobs:
           five_keyboard={w for w in five_non_propn if keyboard_compatible(w)}
           five_accented=five_non_propn-five_keyboard
           five_propn=five_all-five_non_propn
+          propn_up={unicodedata.normalize('NFC',w).upper() for w,_,pos,_ in entries if pos=='PROPN'}
 
           mutation_words=set()
           archaic_words=set()
@@ -127,7 +129,18 @@ jobs:
           bangor_up={unicodedata.normalize('NFC',w).upper() for w in five_non_propn}
           hun_up={unicodedata.normalize('NFC',w).upper() for w in hunspell_five_nonproperish}
           added=hun_up-bangor_up
+          added_no_known_propn=added-propn_up
           overlap=hun_up & bangor_up
+
+          frequencies={}
+          with open('vocab.cy.2500.frequencies.tsv',encoding='utf-8-sig') as f:
+              for line in f:
+                  parts=line.rstrip().split('\t')
+                  if len(parts)==2:
+                      frequencies[unicodedata.normalize('NFC',parts[0]).upper()]=int(parts[1])
+          frequent_hunspell_added=sorted(
+              ((w,frequencies[w]) for w in added_no_known_propn if w in frequencies),
+              key=lambda x:x[1], reverse=True)
 
           # Spoken hunspell stems (extra colloquial candidates only; no affix expansion as it shares aff file)
           spoken=set()
@@ -137,7 +150,7 @@ jobs:
                   w=line.strip().split('/')[0].split()[0] if line.strip() else ''
                   if w and letters_only(w) and len(tokens(w))==5:
                       spoken.add(unicodedata.normalize('NFC',w).upper())
-          spoken_added=spoken-bangor_up
+          spoken_added=spoken-bangor_up-propn_up
 
           summary={
               'bangor_rows':len(entries),
@@ -152,15 +165,20 @@ jobs:
               'bangor_five_tile_colloquial_tagged':len(colloquial_words),
               'hunspell_generated_or_stem_five_tile_nonproperish':len(hun_up),
               'hunspell_overlap_with_bangor':len(overlap),
-              'hunspell_additional_vs_bangor':len(added),
-              'spoken_hunspell_stem_additional_vs_bangor':len(spoken_added),
+              'hunspell_additional_vs_bangor_before_known_propn_filter':len(added),
+              'hunspell_additional_vs_bangor_after_known_propn_filter':len(added_no_known_propn),
+              'hunspell_additional_in_top_2500_frequency_list':len(frequent_hunspell_added),
+              'spoken_hunspell_stem_additional_vs_bangor_after_known_propn_filter':len(spoken_added),
           }
           print('\n=== SUMMARY_JSON ===')
           print(json.dumps(summary,ensure_ascii=False,indent=2))
           print('\n=== ACCENTED SAMPLE ===')
           print('\n'.join(sorted(five_accented,key=str.casefold)[:100]))
-          print('\n=== HUNSPELL ADDED SAMPLE ===')
-          print('\n'.join(sorted(added)[:150]))
+          print('\n=== HUNSPELL ADDED SAMPLE (KNOWN PROPER NAMES REMOVED) ===')
+          print('\n'.join(sorted(added_no_known_propn)[:150]))
+          print('\n=== HUNSPELL ADDITIONS IN TOP 2500 FREQUENCY LIST ===')
+          for w,f in frequent_hunspell_added:
+              print(f'{w}\t{f}')
           print('\n=== SPOKEN STEM ADDED SAMPLE ===')
           print('\n'.join(sorted(spoken_added)[:150]))
 
@@ -171,7 +189,7 @@ jobs:
           with open('audit_summary.json','w',encoding='utf-8') as f:
               json.dump(summary,f,ensure_ascii=False,indent=2)
           with open('hunspell_additions.txt','w',encoding='utf-8') as f:
-              f.write('\n'.join(sorted(added))+'\n')
+              f.write('\n'.join(sorted(added_no_known_propn))+'\n')
           with open('accented_words.txt','w',encoding='utf-8') as f:
               f.write('\n'.join(sorted({w.upper() for w in five_accented}))+'\n')
           PY
