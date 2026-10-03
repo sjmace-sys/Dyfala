@@ -1,0 +1,188 @@
+name: Dyfala Dictionary Audit
+
+on:
+  push:
+    branches: [ dictionary-audit ]
+    paths:
+      - '.github/workflows/dictionary-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download current Welsh sources
+        run: |
+          python - <<'PY'
+          import urllib.request
+          urls = {
+            'lecsicon_cc0.zip': 'https://raw.githubusercontent.com/techiaith/lecsicon-cymraeg-bangor/main/lecsicon_cc0.zip',
+            'cy_GB.dic': 'https://raw.githubusercontent.com/techiaith/hunspell-cy/master/cy_GB.dic',
+            'cy_GB.aff': 'https://raw.githubusercontent.com/techiaith/hunspell-cy/master/cy_GB.aff',
+            'cy_GB_llafar.dic': 'https://raw.githubusercontent.com/techiaith/hunspell-cy-llafar/main/cy_GB_llafar.dic',
+          }
+          for fn, url in urls.items():
+              print('Downloading', url)
+              urllib.request.urlretrieve(url, fn)
+          PY
+
+      - name: Install Hunspell tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y hunspell hunspell-tools || sudo apt-get install -y hunspell
+          command -v unmunch || true
+
+      - name: Audit Bangor lexicon and Hunspell
+        run: |
+          cat > audit.py <<'PY'
+          import csv, json, os, re, subprocess, unicodedata, zipfile
+          from collections import Counter, defaultdict
+
+          DIGRAPHS = ('CH','DD','FF','NG','LL','PH','RH','TH')
+          ALLOWED_WELSH = set('ABCDEFGHIJKLMNOPQRSTUVWXYZÂÊÎÔÛŴŶÄËÏÖÜÁÉÍÓÚÝÀÈÌÒÙỲ')
+          CURRENT_KEYBOARD = set('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+
+          def tokens(word):
+              w = unicodedata.normalize('NFC', word.strip().upper())
+              out=[]; i=0
+              while i < len(w):
+                  two=w[i:i+2]
+                  if two in DIGRAPHS:
+                      out.append(two); i+=2
+                  else:
+                      out.append(w[i]); i+=1
+              return out
+
+          def letters_only(word):
+              w=unicodedata.normalize('NFC', word.strip().upper())
+              return bool(w) and all(ch in ALLOWED_WELSH for ch in w)
+
+          def keyboard_compatible(word):
+              w=unicodedata.normalize('NFC', word.strip().upper())
+              return all(ch in CURRENT_KEYBOARD for ch in w)
+
+          # Unpack lexicon
+          with zipfile.ZipFile('lecsicon_cc0.zip') as z:
+              print('ZIP CONTENTS:', z.namelist())
+              candidates=[n for n in z.namelist() if n.lower().endswith(('.txt','.tsv','.csv'))]
+              if not candidates:
+                  raise SystemExit('No lexicon text file found in zip')
+              name=max(candidates, key=lambda n: z.getinfo(n).file_size)
+              raw=z.read(name).decode('utf-8-sig')
+
+          entries=[]
+          for line in raw.splitlines():
+              if not line.strip(): continue
+              parts=line.split('\t')
+              if len(parts) < 3: continue
+              word, lemma, pos = parts[:3]
+              feats=parts[3] if len(parts)>3 else ''
+              entries.append((word,lemma,pos,feats))
+
+          unique_words=set(w for w,_,_,_ in entries)
+          non_propn=[e for e in entries if e[2] != 'PROPN']
+          non_propn_words=set(e[0] for e in non_propn)
+          five_all={w for w in unique_words if letters_only(w) and len(tokens(w))==5}
+          five_non_propn={w for w in non_propn_words if letters_only(w) and len(tokens(w))==5}
+          five_keyboard={w for w in five_non_propn if keyboard_compatible(w)}
+          five_accented=five_non_propn-five_keyboard
+          five_propn=five_all-five_non_propn
+
+          mutation_words=set()
+          archaic_words=set()
+          colloquial_words=set()
+          for w,lemma,pos,feats in non_propn:
+              if w in five_non_propn:
+                  if 'Mutation=' in feats: mutation_words.add(w)
+                  if 'Style=Arch' in feats: archaic_words.add(w)
+                  if 'Style=Coll' in feats: colloquial_words.add(w)
+
+          # Expand Hunspell using unmunch when available.
+          hunspell_forms=set()
+          try:
+              proc=subprocess.run(['unmunch','cy_GB.dic','cy_GB.aff'], text=True, capture_output=True, timeout=120)
+              print('UNMUNCH rc=',proc.returncode,'stderr first=',proc.stderr[:500])
+              if proc.stdout:
+                  for line in proc.stdout.splitlines():
+                      w=line.strip().split('/')[0].split()[0] if line.strip() else ''
+                      if w: hunspell_forms.add(w)
+          except Exception as e:
+              print('UNMUNCH ERROR',repr(e))
+
+          # Fall back/add raw stems.
+          with open('cy_GB.dic',encoding='utf-8-sig') as f:
+              for i,line in enumerate(f):
+                  if i==0 and line.strip().isdigit(): continue
+                  w=line.strip().split('/')[0].split()[0] if line.strip() else ''
+                  if w: hunspell_forms.add(w)
+
+          hunspell_five={w for w in hunspell_forms if letters_only(w) and len(tokens(w))==5}
+          hunspell_five_nonproperish={w for w in hunspell_five if not (w and w[0].isupper())}
+          # Case-normalize for gameplay comparison
+          bangor_up={unicodedata.normalize('NFC',w).upper() for w in five_non_propn}
+          hun_up={unicodedata.normalize('NFC',w).upper() for w in hunspell_five_nonproperish}
+          added=hun_up-bangor_up
+          overlap=hun_up & bangor_up
+
+          # Spoken hunspell stems (extra colloquial candidates only; no affix expansion as it shares aff file)
+          spoken=set()
+          with open('cy_GB_llafar.dic',encoding='utf-8-sig') as f:
+              for i,line in enumerate(f):
+                  if i==0 and line.strip().isdigit(): continue
+                  w=line.strip().split('/')[0].split()[0] if line.strip() else ''
+                  if w and letters_only(w) and len(tokens(w))==5:
+                      spoken.add(unicodedata.normalize('NFC',w).upper())
+          spoken_added=spoken-bangor_up
+
+          summary={
+              'bangor_rows':len(entries),
+              'bangor_unique_wordforms':len(unique_words),
+              'bangor_five_tile_all_pos':len(five_all),
+              'bangor_five_tile_non_propn':len(five_non_propn),
+              'bangor_five_tile_current_keyboard':len(five_keyboard),
+              'bangor_five_tile_with_diacritics_not_current_keyboard':len(five_accented),
+              'bangor_five_tile_proper_nouns_excluded':len(five_propn),
+              'bangor_five_tile_mutated_forms':len(mutation_words),
+              'bangor_five_tile_archaic_tagged':len(archaic_words),
+              'bangor_five_tile_colloquial_tagged':len(colloquial_words),
+              'hunspell_generated_or_stem_five_tile_nonproperish':len(hun_up),
+              'hunspell_overlap_with_bangor':len(overlap),
+              'hunspell_additional_vs_bangor':len(added),
+              'spoken_hunspell_stem_additional_vs_bangor':len(spoken_added),
+          }
+          print('\n=== SUMMARY_JSON ===')
+          print(json.dumps(summary,ensure_ascii=False,indent=2))
+          print('\n=== ACCENTED SAMPLE ===')
+          print('\n'.join(sorted(five_accented,key=str.casefold)[:100]))
+          print('\n=== HUNSPELL ADDED SAMPLE ===')
+          print('\n'.join(sorted(added)[:150]))
+          print('\n=== SPOKEN STEM ADDED SAMPLE ===')
+          print('\n'.join(sorted(spoken_added)[:150]))
+
+          # Generate candidate accepted list from Bangor, excluding proper nouns/punctuation.
+          candidate=sorted(bangor_up)
+          with open('valid_five_tile_words.txt','w',encoding='utf-8') as f:
+              f.write('\n'.join(candidate)+'\n')
+          with open('audit_summary.json','w',encoding='utf-8') as f:
+              json.dump(summary,f,ensure_ascii=False,indent=2)
+          with open('hunspell_additions.txt','w',encoding='utf-8') as f:
+              f.write('\n'.join(sorted(added))+'\n')
+          with open('accented_words.txt','w',encoding='utf-8') as f:
+              f.write('\n'.join(sorted({w.upper() for w in five_accented}))+'\n')
+          PY
+          python audit.py
+
+      - name: Upload audit files
+        uses: actions/upload-artifact@v4
+        with:
+          name: dyfala-dictionary-audit
+          path: |
+            audit_summary.json
+            valid_five_tile_words.txt
+            hunspell_additions.txt
+            accented_words.txt
