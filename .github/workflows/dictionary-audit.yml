@@ -141,6 +141,10 @@ jobs:
           frequent_hunspell_added=sorted(
               ((w,frequencies[w]) for w in added_no_known_propn if w in frequencies),
               key=lambda x:x[1], reverse=True)
+          freq_five={w:f for w,f in frequencies.items() if letters_only(w) and len(tokens(w))==5}
+          freq_missing_from_bangor=sorted(
+              ((w,f) for w,f in freq_five.items() if w not in bangor_up and w not in propn_up),
+              key=lambda x:x[1], reverse=True)
 
           # Spoken hunspell stems (extra colloquial candidates only; no affix expansion as it shares aff file)
           spoken=set()
@@ -168,6 +172,8 @@ jobs:
               'hunspell_additional_vs_bangor_before_known_propn_filter':len(added),
               'hunspell_additional_vs_bangor_after_known_propn_filter':len(added_no_known_propn),
               'hunspell_additional_in_top_2500_frequency_list':len(frequent_hunspell_added),
+              'top_2500_five_tile_forms':len(freq_five),
+              'top_2500_five_tile_missing_from_bangor_nonpropn':len(freq_missing_from_bangor),
               'spoken_hunspell_stem_additional_vs_bangor_after_known_propn_filter':len(spoken_added),
           }
           print('\n=== SUMMARY_JSON ===')
@@ -178,6 +184,9 @@ jobs:
           print('\n'.join(sorted(added_no_known_propn)[:150]))
           print('\n=== HUNSPELL ADDITIONS IN TOP 2500 FREQUENCY LIST ===')
           for w,f in frequent_hunspell_added:
+              print(f'{w}\t{f}')
+          print('\n=== ALL TOP-2500 FIVE-TILE FORMS MISSING FROM BANGOR ===')
+          for w,f in freq_missing_from_bangor:
               print(f'{w}\t{f}')
           print('\n=== SPOKEN STEM ADDED SAMPLE ===')
           print('\n'.join(sorted(spoken_added)[:150]))
